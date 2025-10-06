@@ -48,3 +48,87 @@ const contacts = [
 ];
 
 console.log("Contacts:", contacts);
+
+function showContacts() {
+  for (let contact = 0; contact < contacts.length; contact++) {
+    console.log(`
+      ${contacts[contact].name} 
+      ${contacts[contact].phone}
+      ${contacts[contact].email}
+      ${contacts[contact].birthdate.toDateString()}
+      ${contacts[contact].address}
+      Labels: ${contacts[contact].labels.join(", ")}
+      `);
+  }
+}
+
+function searchContacts(query) {
+  return contacts.filter((contact) =>
+    contact.name.toLowerCase().includes(query.toLowerCase())
+  );
+}
+
+function showContactDetails(id) {
+  const contact = contacts.find((c) => c.id === id);
+  if (contact) {
+    console.log("Contact Details:", contact);
+  } else {
+    console.log("Contact not found");
+  }
+}
+
+function addContact(contact) {
+  contacts.push(contact);
+  console.log("Contact added:", contact);
+}
+
+function deleteContact(id) {
+  const index = contacts.findIndex((c) => c.id === id);
+  if (index !== -1) {
+    const removed = contacts.splice(index, 1);
+    console.log("Contact deleted:", removed[0]);
+  } else {
+    console.log("Contact not found");
+  }
+}
+
+function updateContact(id, updatedInfo) {
+  const contact = contacts.find((c) => c.id === id);
+  if (contact) {
+    Object.assign(contact, updatedInfo);
+    console.log("Contact updated:", contact);
+  } else {
+    console.log("Contact not found");
+  }
+}
+
+showContacts();
+
+console.log(searchContacts("Jane"));
+
+showContactDetails(4);
+
+addContact({
+  id: 6,
+  name: "Eve White",
+  phone: "222-333-4444",
+  email: "evewhite@example.com",
+  birthdate: new Date("1993-03-03"),
+  address: "987 Birch St, Smalltown, USA",
+  labels: ["friend"],
+});
+
+showContacts();
+
+deleteContact(2);
+
+updateContact(3, {
+  name: "Raditya Abiansyah",
+  email: "raditya@example.com",
+  phone: "087732970056",
+  address: "Cipinang Muara, Jakarta, Indonesia",
+  birthdate: new Date("1999-12-08"),
+  labels: ["family", "work"],
+});
+
+showContacts();
