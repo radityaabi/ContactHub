@@ -75,8 +75,10 @@ Auto-load on page load
     id: "unique-id",
     name: "John Doe", // ✅ Required
     phone: "08123456789", // ✅ Required
+    birthdate: "1992-09-30", // ❌ Optional
     email: "john@example.com", // ❌ Optional
-    address: "Jakarta" // ❌ Optional
+    address: "Jakarta", // ❌ Optional
+    labels: ["client", "family", "friend", "work"] // ❌ Optional
 }
 ```
 
