@@ -102,33 +102,46 @@ function updateContact(id, updatedInfo) {
   }
 }
 
+// SHOW ALL CONTACTS
 showContacts();
 
+// SEARCH CONTACTS
 console.log(searchContacts("Jane"));
 
+// SHOW CONTACT DETAILS
 showContactDetails(4);
 
+// ADD NEW CONTACT
 addContact({
   id: 6,
-  name: "Eve White",
-  phone: "222-333-4444",
-  email: "evewhite@example.com",
-  birthdate: new Date("1993-03-03"),
-  address: "987 Birch St, Smalltown, USA",
-  labels: ["friend"],
+  name: "Yuli Mardani",
+  phone: "0899-9999-9999",
+  email: null,
+  birthdate: new Date("1999-06-30"),
+  address: "Mustikasari, Bekasi, Indonesia",
+  labels: ["family"],
 });
 
+// SHOW ALL CONTACTS AFTER ADDING NEW ONE
 showContacts();
 
+// DELETE A CONTACT
 deleteContact(2);
 
+// UPDATE A CONTACT
 updateContact(3, {
   name: "Raditya Abiansyah",
   email: "raditya@example.com",
-  phone: "087732970056",
+  phone: "0877-3297-0056",
   address: "Cipinang Muara, Jakarta, Indonesia",
   birthdate: new Date("1999-12-08"),
   labels: ["family", "work"],
 });
 
+// UPDATE WRONG ID
+updateContact(10, {
+  name: "Rayna Yuranza",
+});
+
+// SHOW ALL CONTACTS AFTER DELETION AND UPDATE
 showContacts();
