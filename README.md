@@ -4,29 +4,20 @@ A simple contact management application using browser storage.
 
 ## ✨ Features
 
-✅ Add New Contact - Store name, phone, email, address
-
-📋 View All Contacts - See complete contact list
-
-🔍 Search Contacts - Find contacts by keyword
-
-👁️ View Contact Details - See full contact information
-
-✏️ Edit Contacts - Update existing contact data
-
-🗑️ Delete Contacts - Remove unwanted contacts
-
-💾 Auto Save - Data automatically saved to localStorage
+- ✅ Add New Contact - Store name, phone, email, address
+- 📋 View All Contacts - See complete contact list
+- 🔍 Search Contacts - Find contacts by keyword
+- 👁️ View Contact Details - See full contact information
+- ✏️ Edit Contacts - Update existing contact data
+- 🗑️ Delete Contacts - Remove unwanted contacts
+- 💾 Auto Save - Data automatically saved to localStorage
 
 ## 🚀 Quick Start
 
-Open index.html in browser
-
-Choose from main menu options
-
-Follow on-screen instructions
-
-Data saves automatically to browser storage
+1. Open index.html in browser
+2. Choose from main menu options
+3. Follow on-screen instructions
+4. Data saves automatically to browser storage
 
 ## 📝 Menu Options
 
@@ -58,15 +49,11 @@ Data saves automatically to browser storage
 
 ## 💾 Data Storage
 
-Technology: localStorage API
-
-Key: addressBookContacts
-
-Format: JSON array of contacts
-
-Auto-save after every change
-
-Auto-load on page load
+- Technology: localStorage API
+- Key: addressBookContacts
+- Format: JSON array of contacts
+- Auto-save after every change
+- Auto-load on page load
 
 ## 📋 Contact Structure
 
@@ -84,12 +71,8 @@ Auto-load on page load
 
 ## 🛡️ Validation
 
-✅ Name and phone are required
-
-✅ Unique ID generation
-
-✅ Delete confirmation
-
-✅ Empty fields = no change (edit)
-
-✅ Data persistence across browser sessions
+- ✅ Name and phone are required
+- ✅ Unique ID generation
+- ✅ Delete confirmation
+- ✅ Empty fields = no change (edit)
+- ✅ Data persistence across browser sessions
