@@ -48,26 +48,3 @@ const contacts = [
 ];
 
 console.log("Contacts:", contacts);
-
-// Display Contacts in the DOM
-const contactList = document.createElement("ul");
-
-contacts.forEach((contact) => {
-  // Create list item for each contact
-  const listItem = document.createElement("li");
-  listItem.innerHTML = `
-        <strong>${contact.name}</strong><br/>
-        Phone: ${contact.phone}<br/>
-        Email: <a href="mailto:${contact.email}">${contact.email}</a><br/>
-        Birthday: ${new Date(contact.birthdate).toLocaleString("id-ID", {
-          dateStyle: "medium",
-        })}<br/>
-        Address: ${contact.address}<br/>
-        Labels: ${contact.labels.join(", ")}
-    `;
-  // Append list item to the contact list
-  contactList.appendChild(listItem);
-});
-
-// Append contact list to the body
-document.body.appendChild(contactList);
