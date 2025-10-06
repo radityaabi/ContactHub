@@ -1,1 +1,93 @@
-# address-book
+# 📒 Address Book System
+
+A simple contact management application using browser storage.
+
+## ✨ Features
+
+✅ Add New Contact - Store name, phone, email, address
+
+📋 View All Contacts - See complete contact list
+
+🔍 Search Contacts - Find contacts by keyword
+
+👁️ View Contact Details - See full contact information
+
+✏️ Edit Contacts - Update existing contact data
+
+🗑️ Delete Contacts - Remove unwanted contacts
+
+💾 Auto Save - Data automatically saved to localStorage
+
+## 🚀 Quick Start
+
+Open index.html in browser
+
+Choose from main menu options
+
+Follow on-screen instructions
+
+Data saves automatically to browser storage
+
+## 📝 Menu Options
+
+### === MAIN MENU ===
+
+1. Add Contact
+2. View Contacts
+3. Search Contacts
+4. Contact Details
+5. Edit Contact
+6. Delete Contact
+7. Exit
+
+## 🔧 Core Functions
+
+- Storage Management (storage.js)
+- loadContacts() - Load from localStorage
+- saveContacts(contacts) - Save to localStorage
+- initializeStorage() - Setup initial data structure
+
+### Contact Operations
+
+1. addContact() - Add new contact
+2. viewContacts() - Show all contacts
+3. searchContacts(keyword) - Find contacts
+4. getContactDetails(id) - Show full details
+5. editContact(id, newData) - Modify contact
+6. deleteContact(id) - Remove contact
+
+## 💾 Data Storage
+
+Technology: localStorage API
+
+Key: addressBookContacts
+
+Format: JSON array of contacts
+
+Auto-save after every change
+
+Auto-load on page load
+
+## 📋 Contact Structure
+
+```javascript
+{
+    id: "unique-id",
+    name: "John Doe", // ✅ Required
+    phone: "08123456789", // ✅ Required
+    email: "john@example.com", // ❌ Optional
+    address: "Jakarta" // ❌ Optional
+}
+```
+
+## 🛡️ Validation
+
+✅ Name and phone are required
+
+✅ Unique ID generation
+
+✅ Delete confirmation
+
+✅ Empty fields = no change (edit)
+
+✅ Data persistence across browser sessions
