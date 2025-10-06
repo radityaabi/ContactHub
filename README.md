@@ -1,4 +1,4 @@
-# 📒 Address Book System
+# 📒 ContactHub
 
 A simple contact management application using browser storage.
 
