@@ -90,7 +90,7 @@ function searchContacts(query) {
   );
 }
 
-function showContactDetails(id) {
+function getContactDetails(id) {
   const contact = contacts.find((c) => c.id === id);
 
   if (contact.email === null) {
@@ -148,7 +148,7 @@ showContacts();
 console.log(`Search Contact :`, searchContacts("jaNE"));
 
 // SHOW CONTACT DETAILS
-showContactDetails(4);
+getContactDetails(4);
 
 // ADD NEW CONTACT
 addContact({

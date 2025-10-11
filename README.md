@@ -27,7 +27,7 @@ A simple contact management application using browser storage.
 2. View Contacts
 3. Search Contacts
 4. Contact Details
-5. Edit Contact
+5. Update Contact
 6. Delete Contact
 7. Exit
 
@@ -41,10 +41,10 @@ A simple contact management application using browser storage.
 ### Contact Operations
 
 1. addContact() - Add new contact
-2. viewContacts() - Show all contacts
+2. showContacts() - Show all contacts
 3. searchContacts(keyword) - Find contacts
 4. getContactDetails(id) - Show full details
-5. editContact(id, newData) - Modify contact
+5. updateContact(id, newData) - Modify contact
 6. deleteContact(id) - Remove contact
 
 ## 💾 Data Storage
