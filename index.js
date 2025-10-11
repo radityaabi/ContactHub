@@ -143,7 +143,7 @@ const service = {
       return contact;
     });
 
-    if (!found) return console.log("Contact not found");
+    if (!isFound) return console.log("Contact not found");
     console.log("Contact updated:", { id, ...updatedInfo });
   },
 };
