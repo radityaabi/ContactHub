@@ -128,8 +128,10 @@ const service = {
   updateContactById: function (id, updatedInfo) {
     const contact = contacts.find((contact) => contact.id === id);
     if (contact) {
-      Object.assign(contact, updatedInfo);
-      console.log("Contact updated:", contact);
+      const updatedContact = { ...contact, ...updatedInfo };
+      const index = contacts.findIndex((contact) => contact.id === id);
+      contacts[index] = updatedContact;
+      console.log("Contact updated:", contacts[index]);
     } else {
       console.log("Contact not found");
     }
