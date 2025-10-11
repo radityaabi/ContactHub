@@ -70,10 +70,10 @@ const service = {
     }
   },
 
-  searchContacts: function (query) {
+  searchContacts: function (keyword) {
     // Filter contacts by name (case insensitive)
     return contacts.filter((contact) =>
-      contact.name.toLowerCase().includes(query.toLowerCase())
+      contact.name.toLowerCase().includes(keyword.toLowerCase())
     );
   },
 
