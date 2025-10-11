@@ -105,7 +105,7 @@ function getContactDetails(id) {
   if (contact.labels.length === 0) {
     contact.labels.push("-");
   }
-
+  
   if (contact) {
     console.log("Contact Details:", contact);
   } else {
