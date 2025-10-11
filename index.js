@@ -51,24 +51,32 @@ console.log("Contacts:", contacts);
 
 function showContacts() {
   for (let contact = 0; contact < contacts.length; contact++) {
+    let email = contacts[contact].email;
+    let birthdate = contacts[contact].birthdate;
+    let labels = contacts[contact].labels;
+
     if (contacts[contact].email === null) {
-      contacts[contact].email = "-";
+      email = "-";
     }
 
     if (contacts[contact].birthdate === null) {
-      contacts[contact].birthdate = "-";
+      birthdate = "-";
     }
 
     if (contacts[contact].labels.length === 0) {
-      contacts[contact].labels.push("-");
+      labels = ["-"];
     }
 
     console.log(`
       ${contacts[contact].name} 
       ${contacts[contact].phone}
-      ${contacts[contact].email}
-      ${contacts[contact].birthdate.toDateString()}
-      Labels: ${contacts[contact].labels.join(", ")}
+      ${email}
+      ${
+        birthdate instanceof Date
+          ? birthdate.toISOString().split("T")[0]
+          : birthdate
+      }
+      Labels: ${labels.join(", ")}
       `);
   }
 }
