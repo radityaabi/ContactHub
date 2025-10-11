@@ -56,15 +56,15 @@ const service = {
       let birthdate = contacts[contact].birthdate;
       let labels = contacts[contact].labels;
 
-      if (contacts[contact].email === null) {
+      if (email === null) {
         email = "-";
       }
 
-      if (contacts[contact].birthdate === null) {
+      if (birthdate === null) {
         birthdate = "-";
       }
 
-      if (contacts[contact].labels.length === 0) {
+      if (labels.length === 0) {
         labels = ["-"];
       }
 
