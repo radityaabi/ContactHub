@@ -106,7 +106,7 @@ function updateContact(id, updatedInfo) {
 showContacts();
 
 // SEARCH CONTACTS
-console.log(searchContacts("Jane"));
+console.log(`Search Contact :`, searchContacts("jaNE"));
 
 // SHOW CONTACT DETAILS
 showContactDetails(4);
@@ -127,6 +127,12 @@ showContacts();
 
 // DELETE A CONTACT
 deleteContact(2);
+
+// DELETE WRONG ID
+deleteContact(10);
+
+// SHOW ALL CONTACTS AFTER DELETION
+showContacts();
 
 // UPDATE A CONTACT
 updateContact(3, {
