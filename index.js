@@ -51,12 +51,23 @@ console.log("Contacts:", contacts);
 
 function showContacts() {
   for (let contact = 0; contact < contacts.length; contact++) {
+    if (contacts[contact].email === null) {
+      contacts[contact].email = "-";
+    }
+
+    if (contacts[contact].birthdate === null) {
+      contacts[contact].birthdate = "-";
+    }
+
+    if (contacts[contact].labels.length === 0) {
+      contacts[contact].labels.push("-");
+    }
+
     console.log(`
       ${contacts[contact].name} 
       ${contacts[contact].phone}
       ${contacts[contact].email}
       ${contacts[contact].birthdate.toDateString()}
-      ${contacts[contact].address}
       Labels: ${contacts[contact].labels.join(", ")}
       `);
   }
@@ -70,6 +81,23 @@ function searchContacts(query) {
 
 function showContactDetails(id) {
   const contact = contacts.find((c) => c.id === id);
+
+  if (contact.email === null) {
+    contact.email = "-";
+  }
+
+  if (contact.birthdate === null) {
+    contact.birthdate = "-";
+  }
+
+  if (contact.address === null) {
+    contact.address = "-";
+  }
+
+  if (contact.labels.length === 0) {
+    contact.labels.push("-");
+  }
+
   if (contact) {
     console.log("Contact Details:", contact);
   } else {
@@ -117,7 +145,7 @@ addContact({
   name: "Yuli Mardani",
   phone: "0899-9999-9999",
   email: null,
-  birthdate: new Date("1999-06-30"),
+  birthdate: new Date("1999-09-09"),
   address: "Mustikasari, Bekasi, Indonesia",
   labels: ["family"],
 });
@@ -137,11 +165,11 @@ showContacts();
 // UPDATE A CONTACT
 updateContact(3, {
   name: "Raditya Abiansyah",
-  email: "raditya@example.com",
+  email: null,
   phone: "0877-3297-0056",
   address: "Cipinang Muara, Jakarta, Indonesia",
   birthdate: new Date("1999-12-08"),
-  labels: ["family", "work"],
+  labels: [],
 });
 
 // UPDATE WRONG ID
