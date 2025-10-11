@@ -104,40 +104,30 @@ const service = {
     }
   },
 
-  addContact: function (newContactData) {
-    // Get last index
-    const lastIndex = contacts.length - 1;
-    // Generate new ID
-    if (contacts.length > 0) {
-      newContactData.id = contacts[lastIndex].id + 1;
-    } else {
-      newContactData.id = 1;
-    }
-    // Create new array with new contact
-    updatedContacts = [...contacts, newContactData];
-    // Update contacts reference
-    contacts = updatedContacts;
-
+  addContact(newContactData) {
+    // Assign a new ID
+    newContactData.id = contacts.at(-1)?.id + 1 || 1;
+    // Add new contact to array
+    contacts = [...contacts, newContactData];
     console.log("Contact added:", newContactData);
   },
 
-  deleteContactById: function (id) {
-    // Find index of contact to delete
-    const index = contacts.findIndex((c) => c.id === id);
-    if (index !== -1) {
-      // Remove contact from array
-      const removed = contacts.splice(index, 1);
+  deleteContactById(id) {
+    // Find contact by ID
+    const contact = contacts.find((contact) => contact.id === id);
+    if (!contact) return console.log("Contact not found");
 
-      console.log("Contact deleted:", removed[0]);
-    } else {
-      console.log("Contact not found");
-    }
+    // Remove contact from array
+    contacts = contacts.filter((c) => c.id !== id);
+    console.log("Contact deleted:", contact);
   },
 
   updateContactById(id, updatedInfo) {
+    // Find contact by ID
     const index = contacts.findIndex((contact) => contact.id === id);
     if (index === -1) return console.log("Contact not found");
 
+    // Update contact information
     contacts[index] = { ...contacts[index], ...updatedInfo };
     console.log("Contact updated:", contacts[index]);
   },
