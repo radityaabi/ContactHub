@@ -126,7 +126,7 @@ const service = {
     if (!contact) return console.log("Contact not found");
 
     // Remove contact from array
-    contacts = contacts.filter((c) => c.id !== id);
+    contacts = contacts.filter((contact) => contact.id !== id);
     console.log("Contact deleted:", contact);
   },
 
