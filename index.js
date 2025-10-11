@@ -74,14 +74,12 @@ const service = {
   },
 
   searchContacts: function (contacts, keyword) {
-    // Filter contacts by name (case insensitive)
     return contacts.filter((contact) =>
       contact.name.toLowerCase().includes(keyword.toLowerCase())
     );
   },
 
   getContactDetailsById: function (contacts, id) {
-    // Find contact by ID
     const contact = contacts.find((contact) => contact.id === id);
 
     if (contact) {
@@ -92,7 +90,6 @@ const service = {
   },
 
   addContact(contacts, newContactData) {
-    // Check for duplicate phone number
     const isDoublePhoneNumber = newContactData.phone
       ? contacts.some((contact) => contact.phone === newContactData.phone)
       : false;
@@ -100,28 +97,22 @@ const service = {
     if (isDoublePhoneNumber)
       return console.log("Phone number already exists in contacts");
 
-    // Assign a new ID
     newContactData.id = contacts.at(-1)?.id + 1 || 1;
-    // Add new contact to array
     contacts = [...contacts, newContactData];
     console.log("Contact added:", newContactData);
   },
 
   deleteContactById(contacts, id) {
-    // Find contact by ID
     const contact = contacts.find((contact) => contact.id === id);
     if (!contact) return console.log("Contact not found");
 
-    // Remove contact from array
     contacts = contacts.filter((contact) => contact.id !== id);
     console.log("Contact deleted:", contact);
   },
 
   updateContactById(contacts, id, updatedInfo) {
-    // Declare found flag
     let isFound = false;
 
-    // Update contact info by ID using map
     contacts = contacts.map((contact) => {
       if (contact.id === id) {
         isFound = true;
