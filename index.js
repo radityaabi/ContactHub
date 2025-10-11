@@ -48,63 +48,50 @@ let contacts = [
 ];
 
 const service = {
+  showContact: function (contact) {
+    const { email, birthdate } = contact;
+    const labelsString = contact.labels.length
+      ? contact.labels.join(", ")
+      : "-";
+
+    console.log(`
+     🙎${contact.name} 
+     📱${contact.phone}
+     📧${email || "-"}
+     🎂${
+       birthdate instanceof Date ? birthdate.toISOString().split("T")[0] : "-"
+     }
+     🏠${contact.address || "-"}
+     🏷️Labels: ${labelsString}
+    `);
+  },
+
   showContacts: function () {
     for (let index in contacts) {
       const contact = contacts[index];
-      const { email, birthdate } = contact;
-      const labelsString = contact.labels.length
-        ? contact.labels.join(", ")
-        : "-";
-
-      console.log(`
-          🙎${contact.name} 
-          📱${contact.phone}
-          📧${email || "-"}
-          🎂${
-            birthdate instanceof Date
-              ? birthdate.toISOString().split("T")[0]
-              : "-"
-          }
-          🏷️Labels: ${labelsString}
-          `);
+      this.showContact(contact);
     }
   },
 
-  searchContacts: function (keyword) {
+  searchContacts: function (contacts, keyword) {
     // Filter contacts by name (case insensitive)
     return contacts.filter((contact) =>
       contact.name.toLowerCase().includes(keyword.toLowerCase())
     );
   },
 
-  getContactDetailsById: function (id) {
+  getContactDetailsById: function (contacts, id) {
     // Find contact by ID
     const contact = contacts.find((contact) => contact.id === id);
 
     if (contact) {
-      const { email, birthdate, address } = contact;
-      const labelsString = contact.labels.length
-        ? contact.labels.join(", ")
-        : "-";
-
-      console.log(`
-          🙎${contact.name} 
-          📱${contact.phone}
-          📧${email || "-"}
-          🎂${
-            birthdate instanceof Date
-              ? birthdate.toISOString().split("T")[0]
-              : "-"
-          }
-          🏠${address || "-"}
-          🏷️Labels: ${labelsString}
-          `);
+      this.showContact(contact);
     } else {
       console.log("Contact not found");
     }
   },
 
-  addContact(newContactData) {
+  addContact(contacts, newContactData) {
     // Check for duplicate phone number
     const isDoublePhoneNumber = newContactData.phone
       ? contacts.some((contact) => contact.phone === newContactData.phone)
@@ -120,7 +107,7 @@ const service = {
     console.log("Contact added:", newContactData);
   },
 
-  deleteContactById(id) {
+  deleteContactById(contacts, id) {
     // Find contact by ID
     const contact = contacts.find((contact) => contact.id === id);
     if (!contact) return console.log("Contact not found");
@@ -130,7 +117,7 @@ const service = {
     console.log("Contact deleted:", contact);
   },
 
-  updateContactById(id, updatedInfo) {
+  updateContactById(contacts, id, updatedInfo) {
     // Declare found flag
     let isFound = false;
 
@@ -152,13 +139,13 @@ const service = {
 service.showContacts();
 
 // SEARCH CONTACTS
-console.log(`Search Contact Result:`, service.searchContacts("jaNE"));
+console.log(`Search Contact Result:`, service.searchContacts(contacts, "jaNE"));
 
 // SHOW CONTACT DETAILS
-service.getContactDetailsById(4);
+service.getContactDetailsById(contacts, 4);
 
 // ADD NEW CONTACT
-service.addContact({
+service.addContact(contacts, {
   name: "Yuli Mardani",
   phone: "0899-9999-9999",
   email: null,
@@ -167,7 +154,7 @@ service.addContact({
   labels: ["family"],
 });
 
-service.addContact({
+service.addContact(contacts, {
   name: "Yuli Mardani",
   phone: "0899-9999-9999",
   email: null,
@@ -180,16 +167,16 @@ service.addContact({
 service.showContacts();
 
 // DELETE A CONTACT
-service.deleteContactById(2);
+service.deleteContactById(contacts, 2);
 
 // DELETE WRONG ID
-service.deleteContactById(10);
+service.deleteContactById(contacts, 10);
 
 // SHOW ALL CONTACTS AFTER DELETION
 service.showContacts();
 
 // UPDATE A CONTACT
-service.updateContactById(3, {
+service.updateContactById(contacts, 3, {
   name: "Raditya Abiansyah",
   email: null,
   phone: "0877-3297-0056",
@@ -199,7 +186,7 @@ service.updateContactById(3, {
 });
 
 // UPDATE WRONG ID
-service.updateContactById(10, {
+service.updateContactById(contacts, 10, {
   name: "Rayna Yuranza",
 });
 
