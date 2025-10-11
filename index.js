@@ -49,28 +49,17 @@ const contacts = [
 
 const service = {
   showContacts: function () {
-    for (let contact = 0; contact < contacts.length; contact++) {
-      let email =
-        contacts[contact].email === null ? "-" : contacts[contact].email;
-      let birthdate =
-        contacts[contact].birthdate === null
-          ? "-"
-          : contacts[contact].birthdate;
-      let labels =
-        contacts[contact].labels.length === 0
-          ? ["-"]
-          : contacts[contact].labels;
+    for (let index = 0; index < contacts.length; index++) {
+      let email = contacts[index].email;
+      let birthdate = contacts[index].birthdate;
+      let labels = contacts[index].labels;
 
       console.log(`
-          ${contacts[contact].name} 
-          ${contacts[contact].phone}
-          ${email}
-          ${
-            birthdate instanceof Date
-              ? birthdate.toISOString().split("T")[0]
-              : birthdate
-          }
-          Labels: ${labels.join(", ")}
+          ${contacts[index].name} 
+          ${contacts[index].phone}
+          ${email === null ? "-" : email}
+          ${birthdate === null ? "-" : birthdate.toISOString().split("T")[0]}
+          Labels: ${labels.length === 0 ? "-" : labels.join(", ")}
           `);
     }
   },
