@@ -49,106 +49,108 @@ const contacts = [
 
 console.log("Contacts:", contacts);
 
-function showContacts() {
-  for (let contact = 0; contact < contacts.length; contact++) {
-    let email = contacts[contact].email;
-    let birthdate = contacts[contact].birthdate;
-    let labels = contacts[contact].labels;
+const service = {
+  showContacts: function () {
+    for (let contact = 0; contact < contacts.length; contact++) {
+      let email = contacts[contact].email;
+      let birthdate = contacts[contact].birthdate;
+      let labels = contacts[contact].labels;
 
-    if (contacts[contact].email === null) {
-      email = "-";
-    }
-
-    if (contacts[contact].birthdate === null) {
-      birthdate = "-";
-    }
-
-    if (contacts[contact].labels.length === 0) {
-      labels = ["-"];
-    }
-
-    console.log(`
-      ${contacts[contact].name} 
-      ${contacts[contact].phone}
-      ${email}
-      ${
-        birthdate instanceof Date
-          ? birthdate.toISOString().split("T")[0]
-          : birthdate
+      if (contacts[contact].email === null) {
+        email = "-";
       }
-      Labels: ${labels.join(", ")}
-      `);
-  }
-}
 
-function searchContacts(query) {
-  return contacts.filter((contact) =>
-    contact.name.toLowerCase().includes(query.toLowerCase())
-  );
-}
+      if (contacts[contact].birthdate === null) {
+        birthdate = "-";
+      }
 
-function getContactDetails(id) {
-  const contact = contacts.find((c) => c.id === id);
+      if (contacts[contact].labels.length === 0) {
+        labels = ["-"];
+      }
 
-  if (contact.email === null) {
-    contact.email = "-";
-  }
+      console.log(`
+          ${contacts[contact].name} 
+          ${contacts[contact].phone}
+          ${email}
+          ${
+            birthdate instanceof Date
+              ? birthdate.toISOString().split("T")[0]
+              : birthdate
+          }
+          Labels: ${labels.join(", ")}
+          `);
+    }
+  },
 
-  if (contact.birthdate === null) {
-    contact.birthdate = "-";
-  }
+  searchContacts: function (query) {
+    return contacts.filter((contact) =>
+      contact.name.toLowerCase().includes(query.toLowerCase())
+    );
+  },
 
-  if (contact.address === null) {
-    contact.address = "-";
-  }
+  getContactDetails: function (id) {
+    const contact = contacts.find((c) => c.id === id);
 
-  if (contact.labels.length === 0) {
-    contact.labels.push("-");
-  }
-  
-  if (contact) {
-    console.log("Contact Details:", contact);
-  } else {
-    console.log("Contact not found");
-  }
-}
+    if (contact.email === null) {
+      contact.email = "-";
+    }
 
-function addContact(contact) {
-  contacts.push(contact);
-  console.log("Contact added:", contact);
-}
+    if (contact.birthdate === null) {
+      contact.birthdate = "-";
+    }
 
-function deleteContact(id) {
-  const index = contacts.findIndex((c) => c.id === id);
-  if (index !== -1) {
-    const removed = contacts.splice(index, 1);
-    console.log("Contact deleted:", removed[0]);
-  } else {
-    console.log("Contact not found");
-  }
-}
+    if (contact.address === null) {
+      contact.address = "-";
+    }
 
-function updateContact(id, updatedInfo) {
-  const contact = contacts.find((c) => c.id === id);
-  if (contact) {
-    Object.assign(contact, updatedInfo);
-    console.log("Contact updated:", contact);
-  } else {
-    console.log("Contact not found");
-  }
-}
+    if (contact.labels.length === 0) {
+      contact.labels.push("-");
+    }
+
+    if (contact) {
+      console.log("Contact Details:", contact);
+    } else {
+      console.log("Contact not found");
+    }
+  },
+
+  addContact: function (contact) {
+    contacts.push(contact);
+    console.log("Contact added:", contact);
+  },
+
+  deleteContact: function (id) {
+    const index = contacts.findIndex((c) => c.id === id);
+    if (index !== -1) {
+      const removed = contacts.splice(index, 1);
+      console.log("Contact deleted:", removed[0]);
+    } else {
+      console.log("Contact not found");
+    }
+  },
+
+  updateContact: function (id, updatedInfo) {
+    const contact = contacts.find((c) => c.id === id);
+    if (contact) {
+      Object.assign(contact, updatedInfo);
+      console.log("Contact updated:", contact);
+    } else {
+      console.log("Contact not found");
+    }
+  },
+};
 
 // SHOW ALL CONTACTS
-showContacts();
+service.showContacts();
 
 // SEARCH CONTACTS
-console.log(`Search Contact :`, searchContacts("jaNE"));
+console.log(`Search Contact :`, service.searchContacts("jaNE"));
 
 // SHOW CONTACT DETAILS
-getContactDetails(4);
+service.getContactDetails(4);
 
 // ADD NEW CONTACT
-addContact({
+service.addContact({
   id: 6,
   name: "Yuli Mardani",
   phone: "0899-9999-9999",
@@ -159,19 +161,19 @@ addContact({
 });
 
 // SHOW ALL CONTACTS AFTER ADDING NEW ONE
-showContacts();
+service.showContacts();
 
 // DELETE A CONTACT
-deleteContact(2);
+service.deleteContact(2);
 
 // DELETE WRONG ID
-deleteContact(10);
+service.deleteContact(10);
 
 // SHOW ALL CONTACTS AFTER DELETION
-showContacts();
+service.showContacts();
 
 // UPDATE A CONTACT
-updateContact(3, {
+service.updateContact(3, {
   name: "Raditya Abiansyah",
   email: null,
   phone: "0877-3297-0056",
@@ -181,9 +183,9 @@ updateContact(3, {
 });
 
 // UPDATE WRONG ID
-updateContact(10, {
+service.updateContact(10, {
   name: "Rayna Yuranza",
 });
 
 // SHOW ALL CONTACTS AFTER DELETION AND UPDATE
-showContacts();
+service.showContacts();
