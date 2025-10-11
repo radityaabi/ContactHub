@@ -105,6 +105,14 @@ const service = {
   },
 
   addContact(newContactData) {
+    // Check for duplicate phone number
+    const isDoublePhoneNumber = newContactData.phone
+      ? contacts.some((contact) => contact.phone === newContactData.phone)
+      : false;
+
+    if (isDoublePhoneNumber)
+      return console.log("Phone number already exists in contacts");
+
     // Assign a new ID
     newContactData.id = contacts.at(-1)?.id + 1 || 1;
     // Add new contact to array
@@ -143,6 +151,15 @@ console.log(`Search Contact Result:`, service.searchContacts("jaNE"));
 service.getContactDetailsById(4);
 
 // ADD NEW CONTACT
+service.addContact({
+  name: "Yuli Mardani",
+  phone: "0899-9999-9999",
+  email: null,
+  birthdate: new Date("1999-09-09"),
+  address: "Mustikasari, Bekasi, Indonesia",
+  labels: ["family"],
+});
+
 service.addContact({
   name: "Yuli Mardani",
   phone: "0899-9999-9999",
