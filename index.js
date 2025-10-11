@@ -52,21 +52,16 @@ console.log("Contacts:", contacts);
 const service = {
   showContacts: function () {
     for (let contact = 0; contact < contacts.length; contact++) {
-      let email = contacts[contact].email;
-      let birthdate = contacts[contact].birthdate;
-      let labels = contacts[contact].labels;
-
-      if (email === null) {
-        email = "-";
-      }
-
-      if (birthdate === null) {
-        birthdate = "-";
-      }
-
-      if (labels.length === 0) {
-        labels = ["-"];
-      }
+      let email =
+        contacts[contact].email === null ? "-" : contacts[contact].email;
+      let birthdate =
+        contacts[contact].birthdate === null
+          ? "-"
+          : contacts[contact].birthdate;
+      let labels =
+        contacts[contact].labels.length === 0
+          ? ["-"]
+          : contacts[contact].labels;
 
       console.log(`
           ${contacts[contact].name} 
