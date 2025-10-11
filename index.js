@@ -57,15 +57,15 @@ const service = {
         : "-";
 
       console.log(`
-          ${contact.name} 
-          ${contact.phone}
-          ${email || "-"}
-          ${
+          🙎${contact.name} 
+          📱${contact.phone}
+          📧${email || "-"}
+          🎂${
             birthdate instanceof Date
               ? birthdate.toISOString().split("T")[0]
               : "-"
           }
-          Labels: ${labelsString}
+          🏷️Labels: ${labelsString}
           `);
     }
   },
@@ -88,16 +88,16 @@ const service = {
         : "-";
 
       console.log(`
-          ${contact.name} 
-          ${contact.phone}
-          ${email || "-"}
-          ${
+          🙎${contact.name} 
+          📱${contact.phone}
+          📧${email || "-"}
+          🎂${
             birthdate instanceof Date
               ? birthdate.toISOString().split("T")[0]
               : "-"
           }
-          ${address || "-"}
-          Labels: ${labelsString}
+          🏠${address || "-"}
+          🏷️Labels: ${labelsString}
           `);
     } else {
       console.log("Contact not found");
