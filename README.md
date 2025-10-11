@@ -8,7 +8,7 @@ A simple contact management application using browser storage.
 - 📋 View All Contacts - See complete contact list
 - 🔍 Search Contacts - Find contacts by keyword
 - 👁️ View Contact Details - See full contact information
-- ✏️ Edit Contacts - Update existing contact data
+- ✏️ Update Contacts - Update existing contact data
 - 🗑️ Delete Contacts - Remove unwanted contacts
 - 💾 Auto Save - Data automatically saved to localStorage
 
