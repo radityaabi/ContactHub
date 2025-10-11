@@ -47,8 +47,6 @@ const contacts = [
   },
 ];
 
-console.log("Contacts:", contacts);
-
 const service = {
   showContacts: function () {
     for (let contact = 0; contact < contacts.length; contact++) {
