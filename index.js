@@ -82,7 +82,7 @@ const service = {
     const contact = contacts.find((contact) => contact.id === id);
 
     if (contact) {
-      const { email, birthdate } = contact;
+      const { email, birthdate, address } = contact;
       const labelsString = contact.labels.length
         ? contact.labels.join(", ")
         : "-";
@@ -96,6 +96,7 @@ const service = {
               ? birthdate.toISOString().split("T")[0]
               : "-"
           }
+          ${address || "-"}
           Labels: ${labelsString}
           `);
     } else {
