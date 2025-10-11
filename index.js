@@ -49,7 +49,7 @@ let contacts = [
 
 const service = {
   showContacts: function () {
-    for (let index = 0; index < contacts.length; index++) {
+    for (let index in contacts) {
       const contact = contacts[index];
       const { email, birthdate } = contact;
       const labelsString = contact.labels.length
@@ -88,7 +88,7 @@ const service = {
         : "-";
 
       console.log(`
-          🙎${contact.name} 
+        ...  🙎${contact.name} 
           📱${contact.phone}
           📧${email || "-"}
           🎂${
@@ -134,21 +134,12 @@ const service = {
     }
   },
 
-  updateContactById: function (id, updatedInfo) {
-    // Find contact to update
-    const contact = contacts.find((contact) => contact.id === id);
-    if (contact) {
-      // Update contact information
-      const updatedContact = { ...contact, ...updatedInfo };
-      // Find index of contact to update
-      const index = contacts.findIndex((contact) => contact.id === id);
-      // Update contact in array
-      contacts[index] = updatedContact;
+  updateContactById(id, updatedInfo) {
+    const index = contacts.findIndex((contact) => contact.id === id);
+    if (index === -1) return console.log("Contact not found");
 
-      console.log("Contact updated:", contacts[index]);
-    } else {
-      console.log("Contact not found");
-    }
+    contacts[index] = { ...contacts[index], ...updatedInfo };
+    console.log("Contact updated:", contacts[index]);
   },
 };
 
