@@ -131,13 +131,20 @@ const service = {
   },
 
   updateContactById(id, updatedInfo) {
-    // Find contact by ID
-    const index = contacts.findIndex((contact) => contact.id === id);
-    if (index === -1) return console.log("Contact not found");
+    // Declare found flag
+    let isFound = false;
 
-    // Update contact information
-    contacts[index] = { ...contacts[index], ...updatedInfo };
-    console.log("Contact updated:", contacts[index]);
+    // Update contact info by ID using map
+    contacts = contacts.map((contact) => {
+      if (contact.id === id) {
+        isFound = true;
+        return { ...contact, ...updatedInfo };
+      }
+      return contact;
+    });
+
+    if (!found) return console.log("Contact not found");
+    console.log("Contact updated:", { id, ...updatedInfo });
   },
 };
 
