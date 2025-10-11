@@ -88,7 +88,7 @@ const service = {
         : "-";
 
       console.log(`
-        ...  🙎${contact.name} 
+          🙎${contact.name} 
           📱${contact.phone}
           📧${email || "-"}
           🎂${
