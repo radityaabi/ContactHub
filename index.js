@@ -1,5 +1,5 @@
 // Contacts Data
-const contacts = [
+let contacts = [
   {
     id: 1,
     name: "John Doe",
@@ -71,12 +71,14 @@ const service = {
   },
 
   searchContacts: function (query) {
+    // Filter contacts by name (case insensitive)
     return contacts.filter((contact) =>
       contact.name.toLowerCase().includes(query.toLowerCase())
     );
   },
 
   getContactDetailsById: function (id) {
+    // Find contact by ID
     const contact = contacts.find((contact) => contact.id === id);
 
     if (contact) {
@@ -102,22 +104,26 @@ const service = {
   },
 
   addContact: function (contact) {
+    // Get last index
     const lastIndex = contacts.length - 1;
-
+    // Generate new ID
     if (contacts.length > 0) {
       contact.id = contacts[lastIndex].id + 1;
     } else {
       contact.id = 1;
     }
 
-    contacts.push(contact);
+    // Add contact to array
+    contacts = [...contacts, contact];
 
     console.log("Contact added:", contact);
   },
 
   deleteContactById: function (id) {
+    // Find index of contact to delete
     const index = contacts.findIndex((c) => c.id === id);
     if (index !== -1) {
+      // Remove contact from array
       const removed = contacts.splice(index, 1);
       console.log("Contact deleted:", removed[0]);
     } else {
@@ -126,10 +132,14 @@ const service = {
   },
 
   updateContactById: function (id, updatedInfo) {
+    // Find contact to update
     const contact = contacts.find((contact) => contact.id === id);
     if (contact) {
+      // Update contact information
       const updatedContact = { ...contact, ...updatedInfo };
+      // Find index of contact to update
       const index = contacts.findIndex((contact) => contact.id === id);
+      // Update contact in array
       contacts[index] = updatedContact;
       console.log("Contact updated:", contacts[index]);
     } else {
