@@ -82,9 +82,6 @@ function showContacts() {
 }
 
 function searchContacts(query) {
-  if (contact) {
-    console.log("Contact Details:", contact);
-  }
   return contacts.filter((contact) =>
     contact.name.toLowerCase().includes(query.toLowerCase())
   );
