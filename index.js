@@ -110,6 +110,12 @@ const service = {
   },
 
   addContact: function (contact) {
+    const lastIndex = contacts.length - 1;
+    if (contacts.length > 0) {
+      contact.id = contacts[lastIndex].id + 1;
+    } else {
+      contact.id = 1;
+    }
     contacts.push(contact);
     console.log("Contact added:", contact);
   },
@@ -146,7 +152,6 @@ service.getContactDetails(4);
 
 // ADD NEW CONTACT
 service.addContact({
-  id: 6,
   name: "Yuli Mardani",
   phone: "0899-9999-9999",
   email: null,
