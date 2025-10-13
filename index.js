@@ -94,8 +94,9 @@ const service = {
       ? contacts.some((contact) => contact.phone === newContactData.phone)
       : false;
 
-    if (isDoublePhoneNumber)
+    if (isDoublePhoneNumber) {
       return console.log("Phone number already exists in contacts");
+    }
 
     newContactData.id = contacts.at(-1)?.id + 1 || 1;
     contacts = [...contacts, newContactData];
