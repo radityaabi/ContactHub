@@ -91,7 +91,7 @@ const service = {
 
   addContact(dataContacts, newContactData) {
     const isDoublePhoneNumber = newContactData.phone
-      ? dataContacts.some((c) => c.phone === newContactData.phone)
+      ? dataContacts.some((contact) => contact.phone === newContactData.phone)
       : false;
 
     if (isDoublePhoneNumber) {
@@ -100,7 +100,7 @@ const service = {
     }
 
     const maxId = dataContacts.length
-      ? Math.max(...dataContacts.map((c) => c.id))
+      ? Math.max(...dataContacts.map((contact) => contact.id))
       : 0;
 
     const newContact = { ...newContactData, id: maxId + 1 };
@@ -110,25 +110,25 @@ const service = {
   },
 
   deleteContactById(dataContacts, id) {
-    const contact = dataContacts.find((c) => c.id === id);
+    const contact = dataContacts.find((contact) => contact.id === id);
     if (!contact) {
       console.log("Contact not found");
       return dataContacts;
     }
 
-    const updatedContacts = dataContacts.filter((c) => c.id !== id);
+    const updatedContacts = dataContacts.filter((contact) => contact.id !== id);
     console.log("Contact deleted:", contact);
     return updatedContacts;
   },
 
   updateContactById(dataContacts, id, updatedInfo) {
     let found = false;
-    const updatedContacts = dataContacts.map((c) => {
-      if (c.id === id) {
+    const updatedContacts = dataContacts.map((contact) => {
+      if (contact.id === id) {
         found = true;
-        return { ...c, ...updatedInfo };
+        return { ...contact, ...updatedInfo };
       }
-      return c;
+      return contact;
     });
 
     if (!found) {
