@@ -89,15 +89,6 @@ const service = {
   },
 
   addContact(dataContacts, newContactData) {
-    const isPhoneExisted = newContactData.phone
-      ? dataContacts.some((contact) => contact.phone === newContactData.phone)
-      : false;
-
-    if (isPhoneExisted) {
-      console.error("Phone already exists in contacts");
-      return dataContacts;
-    }
-
     const lastId = dataContacts.length
       ? Math.max(...dataContacts.map((contact) => contact.id))
       : 0;
@@ -111,6 +102,15 @@ const service = {
       address: newContactData.address ?? null,
       labels: Array.isArray(newContactData.labels) ? newContactData.labels : [],
     };
+
+    const isPhoneExisted = newContact.phone
+      ? dataContacts.some((contact) => contact.phone === newContact.phone)
+      : false;
+
+    if (isPhoneExisted) {
+      console.error("Phone already exists in contacts");
+      return dataContacts;
+    }
 
     const updatedContacts = [...dataContacts, newContact];
     console.log("Contact added:", newContact);
