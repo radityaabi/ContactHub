@@ -67,8 +67,7 @@ const service = {
   },
 
   showContacts: function () {
-    for (let index in contacts) {
-      const contact = contacts[index];
+    for (let contact of contacts) {
       this.showContact(contact);
     }
   },
