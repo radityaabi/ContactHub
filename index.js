@@ -73,14 +73,14 @@ const service = {
     }
   },
 
-  searchContacts: function (contacts, keyword) {
-    return contacts.filter((contact) =>
+  searchContacts: function (dataContacts, keyword) {
+    return dataContacts.filter((contact) =>
       contact.name.toLowerCase().includes(keyword.toLowerCase())
     );
   },
 
-  getContactDetailsById: function (contacts, id) {
-    const contact = contacts.find((contact) => contact.id === id);
+  getContactDetailsById: function (dataContacts, id) {
+    const contact = dataContacts.find((contact) => contact.id === id);
 
     if (contact) {
       this.showContact(contact);
@@ -89,34 +89,36 @@ const service = {
     }
   },
 
-  addContact(contacts, newContactData) {
+  addContact(dataContacts, newContactData) {
     const isDoublePhoneNumber = newContactData.phone
-      ? contacts.some((contact) => contact.phone === newContactData.phone)
+      ? dataContacts.some((contact) => contact.phone === newContactData.phone)
       : false;
 
     if (isDoublePhoneNumber) {
       return console.log("Phone number already exists in contacts");
     }
 
-    const maxId = contacts.length ? Math.max(...contacts.map((c) => c.id)) : 0;
+    const maxId = dataContacts.length
+      ? Math.max(...dataContacts.map((c) => c.id))
+      : 0;
 
     const newContact = { ...newContactData, id: maxId + 1 };
-    contacts = [...contacts, newContact];
+    contacts = [...dataContacts, newContact];
     console.log("Contact added:", newContact);
   },
 
-  deleteContactById(contacts, id) {
-    const contact = contacts.find((contact) => contact.id === id);
+  deleteContactById(dataContacts, id) {
+    const contact = dataContacts.find((contact) => contact.id === id);
     if (!contact) return console.log("Contact not found");
 
-    contacts = contacts.filter((contact) => contact.id !== id);
+    contacts = dataContacts.filter((contact) => contact.id !== id);
     console.log("Contact deleted:", contact);
   },
 
-  updateContactById(contacts, id, updatedInfo) {
+  updateContactById(dataContacts, id, updatedInfo) {
     let isFound = false;
 
-    contacts = contacts.map((contact) => {
+    contacts = dataContacts.map((contact) => {
       if (contact.id === id) {
         isFound = true;
         return { ...contact, ...updatedInfo };
