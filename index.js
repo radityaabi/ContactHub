@@ -48,6 +48,16 @@ let contacts = [
 ];
 
 const service = {
+  contactStructure: {
+    id: "number",
+    name: "string",
+    phone: "string",
+    email: "string | null",
+    birthdate: "Date | null",
+    address: "string | null",
+    labels: "array of strings | empty array",
+  },
+
   showContact: function (contact) {
     const { email, birthdate } = contact;
     const labelsString = contact.labels.length
@@ -103,7 +113,16 @@ const service = {
       ? Math.max(...dataContacts.map((contact) => contact.id))
       : 0;
 
-    const newContact = { ...newContactData, id: maxId + 1 };
+    const newContact = {
+      id: maxId + 1,
+      name: newContactData.name ?? "Unknown",
+      phone: newContactData.phone ?? "",
+      email: newContactData.email ?? null,
+      birthdate: newContactData.birthdate ?? null,
+      address: newContactData.address ?? null,
+      labels: Array.isArray(newContactData.labels) ? newContactData.labels : [],
+    };
+
     const updatedContacts = [...dataContacts, newContact];
     console.log("Contact added:", newContact);
     return updatedContacts;
