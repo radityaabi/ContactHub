@@ -92,9 +92,10 @@ const service = {
     const lastId = dataContacts.length
       ? Math.max(...dataContacts.map((contact) => contact.id))
       : 0;
+    const newId = lastId + 1;
 
     const newContact = {
-      id: lastId + 1,
+      id: newId,
       name: newContactData.name ?? "Unknown",
       phone: newContactData.phone ?? null,
       email: newContactData.email ?? null,
