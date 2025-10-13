@@ -98,9 +98,11 @@ const service = {
       return console.log("Phone number already exists in contacts");
     }
 
-    newContactData.id = contacts.at(-1)?.id + 1 || 1;
-    contacts = [...contacts, newContactData];
-    console.log("Contact added:", newContactData);
+    const maxId = contacts.length ? Math.max(...contacts.map((c) => c.id)) : 0;
+
+    const newContact = { ...newContactData, id: maxId + 1 };
+    contacts = [...contacts, newContact];
+    console.log("Contact added:", newContact);
   },
 
   deleteContactById(contacts, id) {
