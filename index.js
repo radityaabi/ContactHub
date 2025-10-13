@@ -173,7 +173,6 @@ service.getContactDetailsById(contacts, 4);
 contacts = service.addContact(contacts, {
   name: "Yuli Mardani",
   phone: "0899-9999-9999",
-  email: null,
   birthdate: new Date("1999-09-09"),
   address: "Mustikasari, Bekasi, Indonesia",
   labels: ["family"],
