@@ -48,16 +48,6 @@ let contacts = [
 ];
 
 const service = {
-  contactStructure: {
-    id: "number",
-    name: "string",
-    phone: "string",
-    email: "string | null",
-    birthdate: "Date | null",
-    address: "string | null",
-    labels: "array of strings | empty array",
-  },
-
   showContact: function (contact) {
     const { email, birthdate } = contact;
     const labelsString = contact.labels.length
@@ -100,23 +90,23 @@ const service = {
   },
 
   addContact(dataContacts, newContactData) {
-    const isDoublePhoneNumber = newContactData.phone
+    const isPhoneExisted = newContactData.phone
       ? dataContacts.some((contact) => contact.phone === newContactData.phone)
       : false;
 
-    if (isDoublePhoneNumber) {
-      console.log("Phone number already exists in contacts");
+    if (isPhoneExisted) {
+      console.error("Phone already exists in contacts");
       return dataContacts;
     }
 
-    const maxId = dataContacts.length
+    const lastId = dataContacts.length
       ? Math.max(...dataContacts.map((contact) => contact.id))
       : 0;
 
     const newContact = {
-      id: maxId + 1,
+      id: lastId + 1,
       name: newContactData.name ?? "Unknown",
-      phone: newContactData.phone ?? "",
+      phone: newContactData.phone ?? null,
       email: newContactData.email ?? null,
       birthdate: newContactData.birthdate ?? null,
       address: newContactData.address ?? null,
@@ -131,7 +121,7 @@ const service = {
   deleteContactById(dataContacts, id) {
     const contact = dataContacts.find((contact) => contact.id === id);
     if (!contact) {
-      console.log("Contact not found");
+      console.error("Contact not found");
       return dataContacts;
     }
 
@@ -151,7 +141,7 @@ const service = {
     });
 
     if (!found) {
-      console.log("Contact not found");
+      console.error("Contact not found");
       return dataContacts;
     }
 
