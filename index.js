@@ -91,11 +91,12 @@ const service = {
 
   addContact(dataContacts, newContactData) {
     const isDoublePhoneNumber = newContactData.phone
-      ? dataContacts.some((contact) => contact.phone === newContactData.phone)
+      ? dataContacts.some((c) => c.phone === newContactData.phone)
       : false;
 
     if (isDoublePhoneNumber) {
-      return console.log("Phone number already exists in contacts");
+      console.log("Phone number already exists in contacts");
+      return dataContacts;
     }
 
     const maxId = dataContacts.length
@@ -103,31 +104,40 @@ const service = {
       : 0;
 
     const newContact = { ...newContactData, id: maxId + 1 };
-    contacts = [...dataContacts, newContact];
+    const updatedContacts = [...dataContacts, newContact];
     console.log("Contact added:", newContact);
+    return updatedContacts;
   },
 
   deleteContactById(dataContacts, id) {
-    const contact = dataContacts.find((contact) => contact.id === id);
-    if (!contact) return console.log("Contact not found");
+    const contact = dataContacts.find((c) => c.id === id);
+    if (!contact) {
+      console.log("Contact not found");
+      return dataContacts;
+    }
 
-    contacts = dataContacts.filter((contact) => contact.id !== id);
+    const updatedContacts = dataContacts.filter((c) => c.id !== id);
     console.log("Contact deleted:", contact);
+    return updatedContacts;
   },
 
   updateContactById(dataContacts, id, updatedInfo) {
-    let isFound = false;
-
-    contacts = dataContacts.map((contact) => {
-      if (contact.id === id) {
-        isFound = true;
-        return { ...contact, ...updatedInfo };
+    let found = false;
+    const updatedContacts = dataContacts.map((c) => {
+      if (c.id === id) {
+        found = true;
+        return { ...c, ...updatedInfo };
       }
-      return contact;
+      return c;
     });
 
-    if (!isFound) return console.log("Contact not found");
+    if (!found) {
+      console.log("Contact not found");
+      return dataContacts;
+    }
+
     console.log("Contact updated:", { id, ...updatedInfo });
+    return updatedContacts;
   },
 };
 
@@ -141,7 +151,7 @@ console.log(`Search Contact Result:`, service.searchContacts(contacts, "jaNE"));
 service.getContactDetailsById(contacts, 4);
 
 // ADD NEW CONTACT
-service.addContact(contacts, {
+contacts = service.addContact(contacts, {
   name: "Yuli Mardani",
   phone: "0899-9999-9999",
   email: null,
@@ -150,7 +160,7 @@ service.addContact(contacts, {
   labels: ["family"],
 });
 
-service.addContact(contacts, {
+contacts = service.addContact(contacts, {
   name: "Yuli Mardani",
   phone: "0899-9999-9999",
   email: null,
@@ -163,16 +173,16 @@ service.addContact(contacts, {
 service.showContacts();
 
 // DELETE A CONTACT
-service.deleteContactById(contacts, 2);
+contacts = service.deleteContactById(contacts, 2);
 
 // DELETE WRONG ID
-service.deleteContactById(contacts, 10);
+contacts = service.deleteContactById(contacts, 10);
 
 // SHOW ALL CONTACTS AFTER DELETION
 service.showContacts();
 
 // UPDATE A CONTACT
-service.updateContactById(contacts, 3, {
+contacts = service.updateContactById(contacts, 3, {
   name: "Raditya Abiansyah",
   email: null,
   phone: "0877-3297-0056",
@@ -182,7 +192,7 @@ service.updateContactById(contacts, 3, {
 });
 
 // UPDATE WRONG ID
-service.updateContactById(contacts, 10, {
+contacts = service.updateContactById(contacts, 10, {
   name: "Rayna Yuranza",
 });
 
