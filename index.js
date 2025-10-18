@@ -37,155 +37,39 @@ const setInitialContacts = () => {
   }
 };
 
-const service = {
-  showContact: function (contact) {
-    const { email, birthdate } = contact;
-    const labelsString = contact.labels.length
-      ? contact.labels.join(", ")
-      : "-";
-
-    console.log(`
-     🙎${contact.name} 
-     📱${contact.phone}
-     📧${email || "-"}
-     🎂${
-       birthdate instanceof Date ? birthdate.toISOString().split("T")[0] : "-"
-     }
-     🏠${contact.address || "-"}
-     🏷️Labels: ${labelsString}
-    `);
-  },
-
-  showContacts: function () {
-    for (let contact of contacts) {
-      this.showContact(contact);
-    }
-  },
-
-  searchContacts: function (dataContacts, keyword) {
-    return dataContacts.filter((contact) =>
-      contact.name.toLowerCase().includes(keyword.toLowerCase())
-    );
-  },
-
-  getContactDetailsById: function (dataContacts, id) {
-    const contact = dataContacts.find((contact) => contact.id === id);
-
-    if (contact) {
-      this.showContact(contact);
-    } else {
-      console.log("Contact not found");
-    }
-  },
-
-  addContact(dataContacts, newContactData) {
-    const lastId = dataContacts.length
-      ? Math.max(...dataContacts.map((contact) => contact.id))
-      : 0;
-    const newId = lastId + 1;
-
-    const newContact = {
-      id: newId,
-      name: newContactData.name ?? "Unknown",
-      phone: newContactData.phone ?? null,
-      email: newContactData.email ?? null,
-      birthdate: newContactData.birthdate ?? null,
-      address: newContactData.address ?? null,
-      labels: Array.isArray(newContactData.labels) ? newContactData.labels : [],
-    };
-
-    const isPhoneExisted = newContact.phone
-      ? dataContacts.some((contact) => contact.phone === newContact.phone)
-      : false;
-
-    if (isPhoneExisted) {
-      console.error("Phone already exists in contacts");
-      return dataContacts;
-    }
-
-    const updatedContacts = [...dataContacts, newContact];
-    console.log("Contact added:", newContact);
-    setContacts(updatedContacts);
-  },
-
-  deleteContactById(dataContacts, id) {
-    const contact = dataContacts.find((contact) => contact.id === id);
-    if (!contact) {
-      console.error("Contact not found");
-      return dataContacts;
-    }
-
-    const updatedContacts = dataContacts.filter((contact) => contact.id !== id);
-    console.log("Contact deleted:", contact);
-    setContacts(updatedContacts);
-  },
-
-  editContactById(dataContacts, id, updatedInfo) {
-    let found = false;
-    const updatedContacts = dataContacts.map((contact) => {
-      if (contact.id === id) {
-        found = true;
-        return { ...contact, ...updatedInfo };
-      }
-      return contact;
-    });
-
-    if (!found) {
-      console.error("Contact not found");
-      return dataContacts;
-    }
-
-    console.log("Contact updated:", { id, ...updatedInfo });
-    setContacts(updatedContacts);
-  },
-};
-
 // Initialize contacts from localStorage or set initial contacts
 setInitialContacts();
 let contacts = getContacts();
 
-// // SHOW ALL CONTACTS
-service.showContacts();
+// SHOW ALL CONTACTS
+showContacts(contacts);
 
 // // SEARCH CONTACTS
-console.log(`Search Contact Result:`, service.searchContacts(contacts, "jaNE"));
+console.log(`Search Contact Result:`, searchContacts(contacts, "jaNE"));
 
 // // SHOW CONTACT DETAILS
-service.getContactDetailsById(contacts, 4);
+getContactDetailsById(contacts, 2);
 
 // // ADD NEW CONTACT
-service.addContact(contacts, {
+addContact(contacts, {
   name: "Yuli Mardani",
   phone: "0899-9999-9999",
-  birthdate: new Date("1999-09-09"),
-  address: "Mustikasari, Bekasi, Indonesia",
-  labels: ["family"],
-});
-
-// // ADD NEW CONTACT WITH EXISTING PHONE
-service.addContact(contacts, {
-  name: "Yuli Mardani",
-  phone: "0899-9999-9999",
-  email: null,
   birthdate: new Date("1999-09-09"),
   address: "Mustikasari, Bekasi, Indonesia",
   labels: ["family"],
 });
 
 // // SHOW ALL CONTACTS AFTER ADDING NEW ONE
-service.showContacts();
+showContacts(contacts);
 
 // // DELETE A CONTACT
-service.deleteContactById(contacts, 2);
-
-// // DELETE WRONG ID
-service.deleteContactById(contacts, 10);
+deleteContactById(contacts, 2);
 
 // // SHOW ALL CONTACTS AFTER DELETION
-service.showContacts();
+showContacts(contacts);
 
 // // UPDATE A CONTACT
-service.editContactById(contacts, 3, {
+editContactById(contacts, 3, {
   name: "Raditya Abiansyah",
   email: null,
   phone: "0877-3297-0056",
@@ -194,10 +78,5 @@ service.editContactById(contacts, 3, {
   labels: [],
 });
 
-// // UPDATE WRONG ID
-service.editContactById(contacts, 10, {
-  name: "Rayna Yuranza",
-});
-
 // // SHOW ALL CONTACTS AFTER DELETION AND UPDATE
-service.showContacts();
+showContacts(contacts);
