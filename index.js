@@ -1,5 +1,5 @@
 // Contacts Data
-let contacts = [
+const initialContacts = [
   {
     id: 1,
     name: "John Doe",
@@ -27,25 +27,15 @@ let contacts = [
     address: "789 Pine St, Othertown, USA",
     labels: ["work"],
   },
-  {
-    id: 4,
-    name: "Bob Brown",
-    phone: "444-987-6543",
-    email: "bobbrown@gmail.com",
-    birthdate: new Date("1988-12-12"),
-    address: "321 Maple St, Newtown, USA",
-    labels: ["friend"],
-  },
-  {
-    id: 5,
-    name: "Charlie Davis",
-    phone: "333-222-1111",
-    email: "charliedavis@outlook.com",
-    birthdate: new Date("1995-07-07"),
-    address: "654 Cedar St, Oldtown, USA",
-    labels: ["family", "work"],
-  },
 ];
+
+const setInitialContacts = () => {
+  const contacts = getContacts();
+
+  if (contacts.length === 0) {
+    setContacts(initialContacts);
+  }
+};
 
 const service = {
   showContact: function (contact) {
@@ -115,6 +105,7 @@ const service = {
 
     const updatedContacts = [...dataContacts, newContact];
     console.log("Contact added:", newContact);
+    setContacts(updatedContacts);
     return updatedContacts;
   },
 
@@ -127,6 +118,7 @@ const service = {
 
     const updatedContacts = dataContacts.filter((contact) => contact.id !== id);
     console.log("Contact deleted:", contact);
+    setContacts(updatedContacts);
     return updatedContacts;
   },
 
@@ -146,20 +138,25 @@ const service = {
     }
 
     console.log("Contact updated:", { id, ...updatedInfo });
+    setContacts(updatedContacts);
     return updatedContacts;
   },
 };
 
-// SHOW ALL CONTACTS
+// Initialize contacts from localStorage or set initial contacts
+setInitialContacts();
+let contacts = getContacts();
+
+// // SHOW ALL CONTACTS
 service.showContacts();
 
-// SEARCH CONTACTS
+// // SEARCH CONTACTS
 console.log(`Search Contact Result:`, service.searchContacts(contacts, "jaNE"));
 
-// SHOW CONTACT DETAILS
+// // SHOW CONTACT DETAILS
 service.getContactDetailsById(contacts, 4);
 
-// ADD NEW CONTACT
+// // ADD NEW CONTACT
 contacts = service.addContact(contacts, {
   name: "Yuli Mardani",
   phone: "0899-9999-9999",
@@ -168,7 +165,7 @@ contacts = service.addContact(contacts, {
   labels: ["family"],
 });
 
-// ADD NEW CONTACT WITH EXISTING PHONE
+// // ADD NEW CONTACT WITH EXISTING PHONE
 contacts = service.addContact(contacts, {
   name: "Yuli Mardani",
   phone: "0899-9999-9999",
@@ -178,19 +175,19 @@ contacts = service.addContact(contacts, {
   labels: ["family"],
 });
 
-// SHOW ALL CONTACTS AFTER ADDING NEW ONE
+// // SHOW ALL CONTACTS AFTER ADDING NEW ONE
 service.showContacts();
 
-// DELETE A CONTACT
+// // DELETE A CONTACT
 contacts = service.deleteContactById(contacts, 2);
 
-// DELETE WRONG ID
+// // DELETE WRONG ID
 contacts = service.deleteContactById(contacts, 10);
 
-// SHOW ALL CONTACTS AFTER DELETION
+// // SHOW ALL CONTACTS AFTER DELETION
 service.showContacts();
 
-// UPDATE A CONTACT
+// // UPDATE A CONTACT
 contacts = service.editContactById(contacts, 3, {
   name: "Raditya Abiansyah",
   email: null,
@@ -200,10 +197,10 @@ contacts = service.editContactById(contacts, 3, {
   labels: [],
 });
 
-// UPDATE WRONG ID
+// // UPDATE WRONG ID
 contacts = service.editContactById(contacts, 10, {
   name: "Rayna Yuranza",
 });
 
-// SHOW ALL CONTACTS AFTER DELETION AND UPDATE
+// // SHOW ALL CONTACTS AFTER DELETION AND UPDATE
 service.showContacts();
