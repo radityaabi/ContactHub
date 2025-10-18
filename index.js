@@ -130,7 +130,7 @@ const service = {
     return updatedContacts;
   },
 
-  updateContactById(dataContacts, id, updatedInfo) {
+  editContactById(dataContacts, id, updatedInfo) {
     let found = false;
     const updatedContacts = dataContacts.map((contact) => {
       if (contact.id === id) {
@@ -191,7 +191,7 @@ contacts = service.deleteContactById(contacts, 10);
 service.showContacts();
 
 // UPDATE A CONTACT
-contacts = service.updateContactById(contacts, 3, {
+contacts = service.editContactById(contacts, 3, {
   name: "Raditya Abiansyah",
   email: null,
   phone: "0877-3297-0056",
@@ -201,7 +201,7 @@ contacts = service.updateContactById(contacts, 3, {
 });
 
 // UPDATE WRONG ID
-contacts = service.updateContactById(contacts, 10, {
+contacts = service.editContactById(contacts, 10, {
   name: "Rayna Yuranza",
 });
 

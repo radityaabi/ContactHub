@@ -8,7 +8,7 @@ A simple contact management application using browser storage.
 - 📋 View All Contacts - See complete contact list
 - 🔍 Search Contacts - Find contacts by keyword
 - 👁️ View Contact Details - See full contact information
-- ✏️ Update Contacts - Update existing contact data
+- ✏️ Edit Contacts - Update existing contact data
 - 🗑️ Delete Contacts - Remove unwanted contacts
 - 💾 Auto Save - Data automatically saved to localStorage
 
@@ -43,9 +43,9 @@ A simple contact management application using browser storage.
 1. addContact() - Add new contact
 2. showContacts() - Show all contacts
 3. searchContacts(keyword) - Find contacts
-4. getContactDetails(id) - Show full details
-5. updateContact(id, newData) - Modify contact
-6. deleteContact(id) - Remove contact
+4. getContactDetailsById(id) - Show full details
+5. editContactById(id, newData) - Modify contact
+6. deleteContactById(id) - Remove contact
 
 ## 💾 Data Storage
 
@@ -76,3 +76,4 @@ A simple contact management application using browser storage.
 - ✅ Delete confirmation
 - ✅ Empty fields = no change (edit)
 - ✅ Data persistence across browser sessions
+  Edit Contacts
