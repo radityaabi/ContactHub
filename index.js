@@ -106,7 +106,6 @@ const service = {
     const updatedContacts = [...dataContacts, newContact];
     console.log("Contact added:", newContact);
     setContacts(updatedContacts);
-    return updatedContacts;
   },
 
   deleteContactById(dataContacts, id) {
@@ -119,7 +118,6 @@ const service = {
     const updatedContacts = dataContacts.filter((contact) => contact.id !== id);
     console.log("Contact deleted:", contact);
     setContacts(updatedContacts);
-    return updatedContacts;
   },
 
   editContactById(dataContacts, id, updatedInfo) {
@@ -139,7 +137,6 @@ const service = {
 
     console.log("Contact updated:", { id, ...updatedInfo });
     setContacts(updatedContacts);
-    return updatedContacts;
   },
 };
 
@@ -157,7 +154,7 @@ console.log(`Search Contact Result:`, service.searchContacts(contacts, "jaNE"));
 service.getContactDetailsById(contacts, 4);
 
 // // ADD NEW CONTACT
-contacts = service.addContact(contacts, {
+service.addContact(contacts, {
   name: "Yuli Mardani",
   phone: "0899-9999-9999",
   birthdate: new Date("1999-09-09"),
@@ -166,7 +163,7 @@ contacts = service.addContact(contacts, {
 });
 
 // // ADD NEW CONTACT WITH EXISTING PHONE
-contacts = service.addContact(contacts, {
+service.addContact(contacts, {
   name: "Yuli Mardani",
   phone: "0899-9999-9999",
   email: null,
@@ -179,16 +176,16 @@ contacts = service.addContact(contacts, {
 service.showContacts();
 
 // // DELETE A CONTACT
-contacts = service.deleteContactById(contacts, 2);
+service.deleteContactById(contacts, 2);
 
 // // DELETE WRONG ID
-contacts = service.deleteContactById(contacts, 10);
+service.deleteContactById(contacts, 10);
 
 // // SHOW ALL CONTACTS AFTER DELETION
 service.showContacts();
 
 // // UPDATE A CONTACT
-contacts = service.editContactById(contacts, 3, {
+service.editContactById(contacts, 3, {
   name: "Raditya Abiansyah",
   email: null,
   phone: "0877-3297-0056",
@@ -198,7 +195,7 @@ contacts = service.editContactById(contacts, 3, {
 });
 
 // // UPDATE WRONG ID
-contacts = service.editContactById(contacts, 10, {
+service.editContactById(contacts, 10, {
   name: "Rayna Yuranza",
 });
 
