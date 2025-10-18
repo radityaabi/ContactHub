@@ -30,16 +30,16 @@ const initialContacts = [
 ];
 
 const setInitialContacts = () => {
-  const contacts = getContacts();
+  const contacts = loadContactsToStorage();
 
   if (contacts.length === 0) {
-    setContacts(initialContacts);
+    saveContactsToStorage(initialContacts);
   }
 };
 
 // Initialize contacts from localStorage or set initial contacts
 setInitialContacts();
-let contacts = getContacts();
+let contacts = loadContactsToStorage();
 
 // SHOW ALL CONTACTS
 showContacts(contacts);

@@ -18,7 +18,7 @@ function showContact(contact) {
 
 function showContacts(dataContacts) {
   for (let contact of dataContacts) {
-    this.showContact(contact);
+    showContact(contact);
   }
 }
 
@@ -32,7 +32,7 @@ function getContactDetailsById(dataContacts, id) {
   const contact = dataContacts.find((contact) => contact.id === id);
 
   if (contact) {
-    this.showContact(contact);
+    showContact(contact);
   } else {
     console.log("Contact not found");
   }
@@ -65,7 +65,7 @@ function addContact(dataContacts, newContactData) {
 
   const updatedContacts = [...dataContacts, newContact];
   console.log("Contact added:", newContact);
-  setContacts(updatedContacts);
+  loadContactsToStorage(updatedContacts);
 }
 
 function deleteContactById(dataContacts, id) {
@@ -77,7 +77,7 @@ function deleteContactById(dataContacts, id) {
 
   const updatedContacts = dataContacts.filter((contact) => contact.id !== id);
   console.log("Contact deleted:", contact);
-  setContacts(updatedContacts);
+  loadContactsToStorage(updatedContacts);
 }
 
 function editContactById(dataContacts, id, updatedInfo) {
@@ -96,5 +96,5 @@ function editContactById(dataContacts, id, updatedInfo) {
   }
 
   console.log("Contact updated:", { id, ...updatedInfo });
-  setContacts(updatedContacts);
+  loadContactsToStorage(updatedContacts);
 }

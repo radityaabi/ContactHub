@@ -1,8 +1,8 @@
-const setContacts = (contacts) => {
+const saveContactsToStorage = (contacts) => {
   localStorage.setItem("contacts-data", JSON.stringify(contacts));
 };
 
-const getContacts = () => {
+const loadContactsToStorage = () => {
   const contacts = localStorage.getItem("contacts-data");
 
   if (!contacts) {
@@ -13,6 +13,7 @@ const getContacts = () => {
     return JSON.parse(contacts);
   } catch (error) {
     console.error("Failed to parse contacts from localStorage:", error);
+
     return [];
   }
 };
