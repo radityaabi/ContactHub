@@ -17,3 +17,7 @@ const loadContactsToStorage = () => {
     return [];
   }
 };
+
+const goToHomePage = () => {
+  window.location = "/";
+};
