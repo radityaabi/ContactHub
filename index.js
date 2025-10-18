@@ -33,11 +33,15 @@ const setInitialContacts = () => {
   const contacts = getContacts();
 
   if (contacts.length === 0) {
-    setContacts(initialContacts);
+    saveContactsToStorage(initialContacts);
   }
 };
 
 const service = {
+  showContacts: function () {
+    contacts.forEach((contact) => this.showContact(contact));
+  },
+
   showContact: function (contact) {
     const { email, birthdate } = contact;
     const labelsString = contact.labels.length
@@ -56,12 +60,6 @@ const service = {
     `);
   },
 
-  showContacts: function () {
-    for (let contact of contacts) {
-      this.showContact(contact);
-    }
-  },
-
   searchContacts: function (dataContacts, keyword) {
     return dataContacts.filter((contact) =>
       contact.name.toLowerCase().includes(keyword.toLowerCase())
@@ -71,14 +69,16 @@ const service = {
   getContactDetailsById: function (dataContacts, id) {
     const contact = dataContacts.find((contact) => contact.id === id);
 
-    if (contact) {
-      this.showContact(contact);
-    } else {
+    if (!contact) {
       console.log("Contact not found");
+      return null;
     }
+
+    this.showContact(contact);
   },
 
   addContact(dataContacts, newContactData) {
+    // TODO: Make it simpler / faster
     const lastId = dataContacts.length
       ? Math.max(...dataContacts.map((contact) => contact.id))
       : 0;
@@ -105,10 +105,11 @@ const service = {
 
     const updatedContacts = [...dataContacts, newContact];
     console.log("Contact added:", newContact);
-    setContacts(updatedContacts);
+    saveContactsToStorage(updatedContacts);
   },
 
   deleteContactById(dataContacts, id) {
+    // TODO: Just use filter, without find
     const contact = dataContacts.find((contact) => contact.id === id);
     if (!contact) {
       console.error("Contact not found");
@@ -117,7 +118,7 @@ const service = {
 
     const updatedContacts = dataContacts.filter((contact) => contact.id !== id);
     console.log("Contact deleted:", contact);
-    setContacts(updatedContacts);
+    saveContactsToStorage(updatedContacts);
   },
 
   editContactById(dataContacts, id, updatedInfo) {
@@ -136,7 +137,7 @@ const service = {
     }
 
     console.log("Contact updated:", { id, ...updatedInfo });
-    setContacts(updatedContacts);
+    saveContactsToStorage(updatedContacts);
   },
 };
 
@@ -144,16 +145,16 @@ const service = {
 setInitialContacts();
 let contacts = getContacts();
 
-// // SHOW ALL CONTACTS
+// SHOW ALL CONTACTS
 service.showContacts();
 
-// // SEARCH CONTACTS
+// SEARCH CONTACTS
 console.log(`Search Contact Result:`, service.searchContacts(contacts, "jaNE"));
 
-// // SHOW CONTACT DETAILS
+// SHOW CONTACT DETAILS
 service.getContactDetailsById(contacts, 4);
 
-// // ADD NEW CONTACT
+// ADD NEW CONTACT
 service.addContact(contacts, {
   name: "Yuli Mardani",
   phone: "0899-9999-9999",
@@ -162,7 +163,7 @@ service.addContact(contacts, {
   labels: ["family"],
 });
 
-// // ADD NEW CONTACT WITH EXISTING PHONE
+// ADD NEW CONTACT WITH EXISTING PHONE
 service.addContact(contacts, {
   name: "Yuli Mardani",
   phone: "0899-9999-9999",
@@ -172,19 +173,19 @@ service.addContact(contacts, {
   labels: ["family"],
 });
 
-// // SHOW ALL CONTACTS AFTER ADDING NEW ONE
+// SHOW ALL CONTACTS AFTER ADDING NEW ONE
 service.showContacts();
 
-// // DELETE A CONTACT
+// DELETE A CONTACT
 service.deleteContactById(contacts, 2);
 
-// // DELETE WRONG ID
+// DELETE WRONG ID
 service.deleteContactById(contacts, 10);
 
-// // SHOW ALL CONTACTS AFTER DELETION
+// SHOW ALL CONTACTS AFTER DELETION
 service.showContacts();
 
-// // UPDATE A CONTACT
+// UPDATE A CONTACT
 service.editContactById(contacts, 3, {
   name: "Raditya Abiansyah",
   email: null,
@@ -194,10 +195,10 @@ service.editContactById(contacts, 3, {
   labels: [],
 });
 
-// // UPDATE WRONG ID
+// UPDATE WRONG ID
 service.editContactById(contacts, 10, {
   name: "Rayna Yuranza",
 });
 
-// // SHOW ALL CONTACTS AFTER DELETION AND UPDATE
+// SHOW ALL CONTACTS AFTER DELETION AND UPDATE
 service.showContacts();
