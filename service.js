@@ -1,25 +1,19 @@
+function showContacts(dataContacts) {
+  contacts.forEach((contact) => showContact(contact));
+}
+
 function showContact(contact) {
   const { email, birthdate } = contact;
   const labelsString = contact.labels.length ? contact.labels.join(", ") : "-";
-
-  const birtdayString = "";
 
   console.log(`
      🙎${contact.name} 
      📱${contact.phone}
      📧${email || "-"}
-     🎂${
-       birthdate instanceof Date ? birthdate.toISOString().split("T")[0] : "-"
-     }
+     🎂${birthdateString}
      🏠${contact.address || "-"}
      🏷️Labels: ${labelsString}
     `);
-}
-
-function showContacts(dataContacts) {
-  for (let contact of dataContacts) {
-    showContact(contact);
-  }
 }
 
 function searchContacts(dataContacts, keyword) {
@@ -39,9 +33,7 @@ function getContactDetailsById(dataContacts, id) {
 }
 
 function addContact(dataContacts, newContactData) {
-  const lastId = dataContacts.length
-    ? Math.max(...dataContacts.map((contact) => contact.id))
-    : 0;
+  const lastId = dataContacts[dataContacts.length - 1].id ?? 0;
   const newId = lastId + 1;
 
   const newContact = {
@@ -69,31 +61,23 @@ function addContact(dataContacts, newContactData) {
 }
 
 function deleteContactById(dataContacts, id) {
-  const contact = dataContacts.find((contact) => contact.id === id);
-  if (!contact) {
-    console.error("Contact not found");
+  try {
+    const updatedContacts = dataContacts.filter((contact) => contact.id !== id);
+    console.log("Contact deleted with id:", id);
+    loadContactsToStorage(updatedContacts);
+  } catch (error) {
+    console.error("Failed to delete contact:", error);
     return dataContacts;
   }
-
-  const updatedContacts = dataContacts.filter((contact) => contact.id !== id);
-  console.log("Contact deleted:", contact);
-  loadContactsToStorage(updatedContacts);
 }
 
 function editContactById(dataContacts, id, updatedInfo) {
-  let found = false;
   const updatedContacts = dataContacts.map((contact) => {
     if (contact.id === id) {
-      found = true;
       return { ...contact, ...updatedInfo };
     }
     return contact;
   });
-
-  if (!found) {
-    console.error("Contact not found");
-    return dataContacts;
-  }
 
   console.log("Contact updated:", { id, ...updatedInfo });
   loadContactsToStorage(updatedContacts);
