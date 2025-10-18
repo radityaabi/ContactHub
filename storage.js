@@ -1,9 +1,9 @@
 const setContacts = (contacts) => {
-  localStorage.setItem("contacts", JSON.stringify(contacts));
+  localStorage.setItem("contacts-data", JSON.stringify(contacts));
 };
 
 const getContacts = () => {
-  const contacts = localStorage.getItem("contacts");
+  const contacts = localStorage.getItem("contacts-data");
 
   if (!contacts) {
     return [];
