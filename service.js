@@ -2,6 +2,8 @@ function showContact(contact) {
   const { email, birthdate } = contact;
   const labelsString = contact.labels.length ? contact.labels.join(", ") : "-";
 
+  const birtdayString = "";
+
   console.log(`
      🙎${contact.name} 
      📱${contact.phone}

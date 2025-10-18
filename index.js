@@ -44,13 +44,13 @@ let contacts = getContacts();
 // SHOW ALL CONTACTS
 showContacts(contacts);
 
-// // SEARCH CONTACTS
+// SEARCH CONTACTS
 console.log(`Search Contact Result:`, searchContacts(contacts, "jaNE"));
 
-// // SHOW CONTACT DETAILS
+// SHOW CONTACT DETAILS
 getContactDetailsById(contacts, 2);
 
-// // ADD NEW CONTACT
+// ADD NEW CONTACT
 addContact(contacts, {
   name: "Yuli Mardani",
   phone: "0899-9999-9999",
@@ -59,16 +59,16 @@ addContact(contacts, {
   labels: ["family"],
 });
 
-// // SHOW ALL CONTACTS AFTER ADDING NEW ONE
+// SHOW ALL CONTACTS AFTER ADDING NEW ONE
 showContacts(contacts);
 
-// // DELETE A CONTACT
+// DELETE A CONTACT
 deleteContactById(contacts, 2);
 
-// // SHOW ALL CONTACTS AFTER DELETION
+// SHOW ALL CONTACTS AFTER DELETION
 showContacts(contacts);
 
-// // UPDATE A CONTACT
+// UPDATE A CONTACT
 editContactById(contacts, 3, {
   name: "Raditya Abiansyah",
   email: null,
@@ -78,5 +78,5 @@ editContactById(contacts, 3, {
   labels: [],
 });
 
-// // SHOW ALL CONTACTS AFTER DELETION AND UPDATE
+// SHOW ALL CONTACTS AFTER DELETION AND UPDATE
 showContacts(contacts);
