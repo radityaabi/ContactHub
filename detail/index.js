@@ -88,7 +88,7 @@ function renderContactById() {
           ? `
         <div class="flex items-center gap-3">
           <i data-feather="calendar" class="text-blue-700"></i>
-          <span>${contact.birthdate}</span>
+          <span>${formattedBirthdate(contact.birthdate)}</span>
         </div>
       `
           : ""

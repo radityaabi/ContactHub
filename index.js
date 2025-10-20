@@ -83,21 +83,6 @@ const renderContacts = () => {
           .join(" ")
       : "-";
 
-    let formattedBirthdate = "-";
-    if (contact.birthdate) {
-      try {
-        formattedBirthdate = new Date(contact.birthdate).toLocaleString(
-          "en-US",
-          {
-            dateStyle: "long",
-          }
-        );
-      } catch (error) {
-        console.warn("Invalid birthdate for contact:", contact.fullName);
-        formattedBirthdate = "Invalid Date";
-      }
-    }
-
     const initials = getInitials(contact.fullName);
     const bgColor = getColorForInitial(initials);
 
@@ -111,7 +96,7 @@ const renderContacts = () => {
         </td>
         <td class="px-4 py-2">${contact.phone ?? "-"}</td>
         <td class="px-4 py-2">${contact.email ?? "-"}</td>
-        <td class="px-4 py-2">${formattedBirthdate}</td>
+        <td class="px-4 py-2">${formattedBirthdate(contact.birthdate)}</td>
         <td class="px-4 py-2">
           ${labelsString}
         </td>

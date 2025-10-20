@@ -36,6 +36,18 @@ function getLabelColorClass(label) {
   return colorMap[label.toLowerCase()] || "bg-gray-100 text-gray-800";
 }
 
+function formattedBirthdate(birthdate) {
+  if (birthdate) {
+    try {
+      return new Date(birthdate).toLocaleString("en-US", {
+        dateStyle: "long",
+      });
+    } catch (error) {
+      return "Invalid Date";
+    }
+  }
+}
+
 const showNotification = (message, type = "info") => {
   const notificationContainer = document.getElementById(
     "notification-container"
