@@ -8,6 +8,7 @@ const initialContacts = [
     birthdate: new Date("1990-01-01"),
     address: "123 Main St, Anytown, USA",
     labels: ["friend", "work"],
+    // color: "bg-blue-500", TODO: Save color in data
   },
   {
     id: 2,
@@ -151,9 +152,9 @@ function addDeleteEventListeners() {
         if (confirm("Are you sure you want to delete this contact?")) {
           deleteContactById(contacts, contactId);
           showNotification("Contact deleted successfully", "success");
-          setTimeout(function () {
+          setTimeout(() => {
             goToDashboardPage();
-          }, 3000);
+          }, 300);
         } else {
           showNotification("Contact deletion cancelled", "info");
         }

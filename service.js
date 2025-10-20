@@ -1,6 +1,6 @@
-const goToDashboardPage = () => {
+function goToDashboardPage() {
   window.location = "/";
-};
+}
 
 function getInitials(name) {
   if (!name) return "NA";
@@ -43,7 +43,7 @@ function getLabelColorClass(label) {
 function formattedBirthdate(birthdate) {
   if (birthdate) {
     try {
-      return new Date(birthdate).toLocaleString("en-US", {
+      return new Date(birthdate).toLocaleString("en-UK", {
         dateStyle: "long",
       });
     } catch (error) {
@@ -72,7 +72,7 @@ function showNotification(message, type = "info") {
 
   setTimeout(() => {
     notificationContainer.removeChild(notification);
-  }, 3000);
+  }, 300);
 }
 
 function getContactDetailsById(dataContacts, id) {
@@ -142,7 +142,7 @@ function addContact(dataContacts, newContactData) {
   );
   setTimeout(() => {
     goToDashboardPage();
-  }, 3000);
+  }, 300);
 }
 
 function deleteContactById(dataContacts, id) {
@@ -178,5 +178,5 @@ function editContactById(dataContacts, id, updatedFields) {
   showNotification("Contact updated succesfully", "success");
   setTimeout(() => {
     goToDashboardPage();
-  }, 3000);
+  }, 300);
 }

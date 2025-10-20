@@ -9,7 +9,7 @@ function renderContactById() {
     showNotification("Contact not found", "error");
     setTimeout(() => {
       goToDashboardPage();
-    }, 2000);
+    }, 300);
     return;
   }
 
@@ -137,7 +137,7 @@ function addDeleteEventListeners(contact) {
 
       setTimeout(function () {
         window.location.href = "/";
-      }, 1500);
+      }, 300);
     } else {
       showNotification("Contact deletion cancelled", "info");
     }
