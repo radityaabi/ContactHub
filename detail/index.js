@@ -98,7 +98,7 @@ function renderContactById() {
     <!-- Actions -->
     <div class="flex gap-4 mt-8">
       <button
-        onclick="editContact(${contact.id})"
+        onclick="editContactPage(${contact.id})"
         class="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 edit-button"
       >
         <i data-feather="edit"></i> Edit
@@ -144,7 +144,7 @@ function addDeleteEventListeners(contact) {
   });
 }
 
-function editContact(id) {
+function editContactPage(id) {
   window.location.href = `/edit-contact/?id=${id}`;
 }
 

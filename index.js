@@ -103,14 +103,14 @@ const renderContacts = () => {
         
         <td class="px-4 py-2 text-center space-x-3">
           <button
-            onclick="viewContact(${contact.id})"
+            onclick="detailContactPage(${contact.id})"
             class="text-blue-600 hover:text-blue-800 transition-colors view-button"
             title="View"
           >
             <i data-feather="eye"></i>
           </button>
           <button 
-            onclick="editContact(${contact.id})"
+            onclick="editContactPage(${contact.id})"
             class="text-green-600 hover:text-green-800 transition-colors edit-button" 
             title="Edit"
           >
@@ -133,11 +133,11 @@ const renderContacts = () => {
   addDeleteEventListeners();
 };
 
-function editContact(id) {
+function editContactPage(id) {
   window.location.href = `/edit-contact/?id=${id}`;
 }
 
-function viewContact(id) {
+function detailContactPage(id) {
   window.location.href = `/detail/?id=${id}`;
 }
 
