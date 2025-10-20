@@ -8,6 +8,7 @@ const initialContacts = [
     birthdate: new Date("1990-01-01"),
     address: "123 Main St, Anytown, USA",
     labels: ["friend", "work"],
+    color: "bg-blue-500",
   },
   {
     id: 2,
@@ -17,6 +18,7 @@ const initialContacts = [
     birthdate: new Date("1985-05-15"),
     address: "456 Oak St, Sometown, USA",
     labels: ["family"],
+    color: "bg-green-500",
   },
   {
     id: 3,
@@ -26,6 +28,7 @@ const initialContacts = [
     birthdate: new Date("1992-09-30"),
     address: "789 Pine St, Othertown, USA",
     labels: ["work"],
+    color: "bg-red-500",
   },
 ];
 
@@ -84,12 +87,13 @@ const renderContacts = () => {
       : "-";
 
     const initials = getInitials(contact.fullName);
-    const bgColor = getColorForInitial(initials);
 
     const contactRow = `
       <tr class="border-t hover:bg-gray-50">
         <td class="px-4 py-2 flex items-center gap-3">
-          <div class="w-10 h-10 ${bgColor} rounded-full flex items-center justify-center text-white font-bold">
+          <div class="w-10 h-10 ${
+            contact.color
+          } rounded-full flex items-center justify-center text-white font-bold">
             ${initials}
           </div>
           <span>${contact.fullName}</span>
@@ -151,9 +155,9 @@ function addDeleteEventListeners() {
         if (confirm("Are you sure you want to delete this contact?")) {
           deleteContactById(contacts, contactId);
           showNotification("Contact deleted successfully", "success");
-          setTimeout(function () {
+          setTimeout(() => {
             goToDashboardPage();
-          }, 3000);
+          }, 300);
         } else {
           showNotification("Contact deletion cancelled", "info");
         }

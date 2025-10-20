@@ -1,6 +1,6 @@
-const goToDashboardPage = () => {
+function goToDashboardPage() {
   window.location = "/";
-};
+}
 
 function getInitials(name) {
   if (!name) return "NA";
@@ -25,7 +25,12 @@ function getColorForInitial(initials) {
     "bg-orange-500",
   ];
 
-  let index = initials.charCodeAt(0) % colors.length;
+  let hash = 0;
+  for (let i = 0; i < initials.length; i++) {
+    hash = initials.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  let index = Math.abs(hash) % colors.length;
   return colors[index];
 }
 
@@ -72,7 +77,7 @@ function showNotification(message, type = "info") {
 
   setTimeout(() => {
     notificationContainer.removeChild(notification);
-  }, 3000);
+  }, 300);
 }
 
 function getContactDetailsById(dataContacts, id) {
@@ -111,6 +116,7 @@ function addContact(dataContacts, newContactData) {
     birthdate: newContactData.birthdate ?? null,
     address: newContactData.address ?? null,
     labels: Array.isArray(newContactData.labels) ? newContactData.labels : [],
+    color: newContactData.color,
   };
 
   if (!newContact.phone && !newContact.email) {
@@ -142,7 +148,7 @@ function addContact(dataContacts, newContactData) {
   );
   setTimeout(() => {
     goToDashboardPage();
-  }, 3000);
+  }, 300);
 }
 
 function deleteContactById(dataContacts, id) {
@@ -178,5 +184,5 @@ function editContactById(dataContacts, id, updatedFields) {
   showNotification("Contact updated succesfully", "success");
   setTimeout(() => {
     goToDashboardPage();
-  }, 3000);
+  }, 300);
 }
