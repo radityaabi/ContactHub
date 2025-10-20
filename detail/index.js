@@ -28,8 +28,8 @@ function renderContactById() {
   const contactDetails = `
     <div class="flex items-center gap-5 border-b pb-5 mb-5">
       ${(function () {
-        var initials = getInitials(contact.fullName);
-        var bgColor = getColorForInitial(initials);
+        const initials = getInitials(contact.fullName);
+        const bgColor = contact.color;
         return (
           '<div class="w-16 h-16 ' +
           bgColor +
