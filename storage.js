@@ -17,7 +17,3 @@ const loadContactsFromStorage = () => {
     return [];
   }
 };
-
-const goToDashboardPage = () => {
-  window.location = "/";
-};

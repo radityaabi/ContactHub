@@ -1,3 +1,7 @@
+const goToDashboardPage = () => {
+  window.location = "/";
+};
+
 function getInitials(name) {
   if (!name) return "NA";
   let words = name.trim().split(" ");
