@@ -46,6 +46,7 @@ function formattedBirthdate(birthdate) {
       return "Invalid Date";
     }
   }
+  return "-";
 }
 
 const showNotification = (message, type = "info") => {
