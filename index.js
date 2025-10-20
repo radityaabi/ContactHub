@@ -2,7 +2,7 @@
 const initialContacts = [
   {
     id: 1,
-    name: "John Doe",
+    fullName: "John Doe",
     phone: "1234567890",
     email: "johndoe@gmail.com",
     birthdate: new Date("1990-01-01"),
@@ -11,7 +11,7 @@ const initialContacts = [
   },
   {
     id: 2,
-    name: "Jane Smith",
+    fullName: "Jane Smith",
     phone: "9876543210",
     email: "janesmith@gmail.com",
     birthdate: new Date("1985-05-15"),
@@ -20,7 +20,7 @@ const initialContacts = [
   },
   {
     id: 3,
-    name: "Alice Johnson",
+    fullName: "Alice Johnson",
     phone: "5551234567",
     email: "alicejohnson@gmail.com",
     birthdate: new Date("1992-09-30"),
@@ -28,10 +28,9 @@ const initialContacts = [
     labels: ["work"],
   },
 ];
-filterContactsByLabel;
 
 const setInitialContacts = () => {
-  const contacts = loadContactsToStorage();
+  const contacts = loadContactsFromStorage();
 
   if (contacts.length === 0) {
     saveContactsToStorage(initialContacts);
@@ -40,7 +39,7 @@ const setInitialContacts = () => {
 
 const renderContacts = () => {
   setInitialContacts();
-  const contacts = loadContactsToStorage();
+  const contacts = loadContactsFromStorage();
 
   const queryString = window.location.search;
   const params = new URLSearchParams(queryString);
@@ -93,14 +92,14 @@ const renderContacts = () => {
           }
         );
       } catch (error) {
-        console.warn("Invalid birthdate for contact:", contact.name);
+        console.warn("Invalid birthdate for contact:", contact.fullName);
         formattedBirthdate = "Invalid Date";
       }
     }
 
     const contactRow = `
       <tr class="border-t hover:bg-gray-50">
-        <td class="px-4 py-2">${contact.name}</td>
+        <td class="px-4 py-2">${contact.fullName}</td>
         <td class="px-4 py-2">${contact.phone ?? "-"}</td>
         <td class="px-4 py-2">${contact.email ?? "-"}</td>
         <td class="px-4 py-2">${formattedBirthdate}</td>
@@ -143,7 +142,7 @@ const addDeleteEventListeners = () => {
   document.querySelectorAll(".delete-btn").forEach((button) => {
     button.addEventListener("click", (event) => {
       const contactId = parseInt(event.currentTarget.getAttribute("data-id"));
-      const contacts = loadContactsToStorage();
+      const contacts = loadContactsFromStorage();
 
       try {
         if (confirm("Are you sure you want to delete this contact?")) {
@@ -159,28 +158,6 @@ const addDeleteEventListeners = () => {
       }
     });
   });
-};
-
-const showNotification = (message, type = "info") => {
-  const notificationContainer = document.getElementById(
-    "notification-container"
-  );
-  const notification = document.createElement("div");
-
-  notification.className = `mb-4 px-4 py-2 rounded text-white ${
-    type === "success"
-      ? "bg-green-500"
-      : type === "error"
-      ? "bg-red-500"
-      : "bg-blue-500"
-  }`;
-  notification.innerText = message;
-
-  notificationContainer.appendChild(notification);
-
-  setTimeout(() => {
-    notificationContainer.removeChild(notification);
-  }, 3000);
 };
 
 // Initial Render

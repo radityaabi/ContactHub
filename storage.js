@@ -2,7 +2,7 @@ const saveContactsToStorage = (contacts) => {
   localStorage.setItem("contacts-data", JSON.stringify(contacts));
 };
 
-const loadContactsToStorage = () => {
+const loadContactsFromStorage = () => {
   const contacts = localStorage.getItem("contacts-data");
 
   if (!contacts) {

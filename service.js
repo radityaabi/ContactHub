@@ -9,7 +9,7 @@
 //     ? new Date(birthdate).toLocaleDateString("en-US", medium)
 //     : "-";
 //   console.log(`
-//      🙎${contact.name}
+//      🙎${contact.fullName}
 //      📱${contact.phone}
 //      📧${email || "-"}
 //      🎂${birthdateString}
@@ -17,6 +17,28 @@
 //      🏷️Labels: ${labelsString}
 //     `);
 // }
+
+const showNotification = (message, type = "info") => {
+  const notificationContainer = document.getElementById(
+    "notification-container"
+  );
+  const notification = document.createElement("div");
+
+  notification.className = `mb-4 px-4 py-2 rounded text-white ${
+    type === "success"
+      ? "bg-green-500"
+      : type === "error"
+      ? "bg-red-500"
+      : "bg-blue-500"
+  }`;
+  notification.innerText = message;
+
+  notificationContainer.appendChild(notification);
+
+  setTimeout(() => {
+    notificationContainer.removeChild(notification);
+  }, 3000);
+};
 
 function getContactDetailsById(dataContacts, id) {
   const contact = dataContacts.find((contact) => contact.id === id);
@@ -30,7 +52,7 @@ function getContactDetailsById(dataContacts, id) {
 
 function searchContacts(dataContacts, keyword) {
   return dataContacts.filter((contact) =>
-    contact.name.toLowerCase().includes(keyword.toLowerCase())
+    contact.fullName.toLowerCase().includes(keyword.toLowerCase())
   );
 }
 
@@ -53,7 +75,7 @@ function addContact(dataContacts, newContactData) {
 
   const newContact = {
     id: newId,
-    name: newContactData.name ?? "Unknown",
+    fullName: newContactData.fullName ?? "Unknown",
     phone: newContactData.phone ?? null,
     email: newContactData.email ?? null,
     birthdate: newContactData.birthdate ?? null,
@@ -61,18 +83,41 @@ function addContact(dataContacts, newContactData) {
     labels: Array.isArray(newContactData.labels) ? newContactData.labels : [],
   };
 
+  if (newContact.fullName.trim() === "") {
+    showNotification("Full name is required to add a contact.", "error");
+    return dataContacts;
+  }
+
+  if (!newContact.phone && !newContact.email) {
+    showNotification(
+      "At least one contact method (phone or email) is required.",
+      "error"
+    );
+    return dataContacts;
+  }
+
   const isPhoneExisted = newContact.phone
     ? dataContacts.some((contact) => contact.phone === newContact.phone)
     : false;
 
   if (isPhoneExisted) {
-    console.error("Phone already exists in contacts");
+    showNotification(
+      `Contact with phone number ${newContact.phone} already exists.`,
+      "error"
+    );
     return dataContacts;
   }
 
   const updatedContacts = [...dataContacts, newContact];
-  console.log("Contact added:", newContact);
+
   saveContactsToStorage(updatedContacts);
+  showNotification(
+    `Contact ${newContact.fullName} added successfully!`,
+    "success"
+  );
+  setTimeout(() => {
+    goToHomePage();
+  }, 3000);
 }
 
 function deleteContactById(dataContacts, id) {
