@@ -26,7 +26,7 @@ function renderContactById() {
       : '<span class="bg-gray-100 text-gray-800 text-xs px-3 py-1 rounded-full">No labels</span>';
 
   const contactDetails = `
-    <div class="flex items-center gap-5 border-b pb-5 mb-5">
+    <div class="flex items-center gap-5 border-b border-gray-300 pb-5 mb-5">
       ${(function () {
         const initials = getInitials(contact.fullName);
         return `<div class="w-16 h-16 ${contact.color} rounded-full flex items-center justify-center text-white text-2xl font-bold"> ${initials} </div>`;
