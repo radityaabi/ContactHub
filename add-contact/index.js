@@ -27,19 +27,15 @@ function getFormData() {
   if (formData.get("work")) labels.push("work");
 
   const fullName = formData.get("fullName");
-  const phone = formData.get("phone");
-  const email = formData.get("email");
-  const address = formData.get("address");
-  const birthdate = formData.get("birthdate");
   const initials = getInitials(fullName);
   const backgroundColor = getColorForInitial(initials);
 
   return {
     fullName: fullName,
-    phone: phone || null,
-    email: email || null,
-    address: address || null,
-    birthdate: birthdate || null,
+    phone: formData.get("phone") || null,
+    email: formData.get("email") || null,
+    address: formData.get("address") || null,
+    birthdate: formData.get("birthdate") || null,
     labels: labels,
     color: backgroundColor,
   };
