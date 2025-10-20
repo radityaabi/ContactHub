@@ -8,7 +8,7 @@ function renderContactById() {
   if (!contact) {
     showNotification("Contact not found", "error");
     setTimeout(() => {
-      goToHomePage();
+      goToDashboardPage();
     }, 2000);
     return;
   }

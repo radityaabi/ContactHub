@@ -152,7 +152,7 @@ function addDeleteEventListeners() {
           deleteContactById(contacts, contactId);
           showNotification("Contact deleted successfully", "success");
           setTimeout(function () {
-            goToHomePage();
+            goToDashboardPage();
           }, 3000);
         } else {
           showNotification("Contact deletion cancelled", "info");

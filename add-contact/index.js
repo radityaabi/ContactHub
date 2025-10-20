@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (cancelButton) {
     cancelButton.addEventListener("click", function () {
-      goToHomePage();
+      goToDashboardPage();
     });
   }
 });

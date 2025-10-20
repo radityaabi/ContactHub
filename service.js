@@ -137,7 +137,7 @@ function addContact(dataContacts, newContactData) {
     "success"
   );
   setTimeout(() => {
-    goToHomePage();
+    goToDashboardPage();
   }, 3000);
 }
 
@@ -173,6 +173,6 @@ function editContactById(dataContacts, id, updatedFields) {
   saveContactsToStorage(updatedContacts);
   showNotification("Contact updated succesfully", "success");
   setTimeout(() => {
-    goToHomePage();
+    goToDashboardPage();
   }, 3000);
 }
