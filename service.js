@@ -1,3 +1,41 @@
+function getInitials(name) {
+  if (!name) return "NA";
+  let words = name.trim().split(" ");
+  let initials = "";
+  for (let i = 0; i < words.length && initials.length < 2; i++) {
+    if (words[i].length > 0) initials += words[i][0].toUpperCase();
+  }
+  return initials;
+}
+
+function getColorForInitial(initials) {
+  let colors = [
+    "bg-blue-500",
+    "bg-green-500",
+    "bg-red-500",
+    "bg-yellow-500",
+    "bg-purple-500",
+    "bg-pink-500",
+    "bg-teal-500",
+    "bg-indigo-500",
+    "bg-orange-500",
+  ];
+
+  let index = initials.charCodeAt(0) % colors.length;
+  return colors[index];
+}
+
+function getLabelColorClass(label) {
+  const colorMap = {
+    work: "bg-blue-100 text-blue-800",
+    friend: "bg-green-100 text-green-800",
+    family: "bg-purple-100 text-purple-800",
+    client: "bg-orange-100 text-orange-800",
+  };
+
+  return colorMap[label.toLowerCase()] || "bg-gray-100 text-gray-800";
+}
+
 const showNotification = (message, type = "info") => {
   const notificationContainer = document.getElementById(
     "notification-container"

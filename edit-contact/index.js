@@ -21,9 +21,9 @@ const queryString = window.location.search;
 const params = new URLSearchParams(queryString);
 const id = Number(params.get("id"));
 
-renderContactById();
+renderEditContactById(id);
 
-function renderContactById() {
+function renderEditContactById(id) {
   const contact = getContactDetailsById(dataContacts, id);
 
   document.getElementById("fullName").defaultValue = contact.fullName;

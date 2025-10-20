@@ -77,7 +77,8 @@ const renderContacts = () => {
     const labelsString = contact.labels.length
       ? contact.labels
           .map((label) => {
-            return `<span class="px-2 py-1 bg-blue-200 text-blue-800 text-xs rounded">${label}</span>`;
+            const colorClass = getLabelColorClass(label);
+            return `<span class="px-2 py-1 ${colorClass} text-xs rounded">${label}</span>`;
           })
           .join(" ")
       : "-";
@@ -97,9 +98,17 @@ const renderContacts = () => {
       }
     }
 
+    const initials = getInitials(contact.fullName);
+    const bgColor = getColorForInitial(initials);
+
     const contactRow = `
       <tr class="border-t hover:bg-gray-50">
-        <td class="px-4 py-2">${contact.fullName}</td>
+        <td class="px-4 py-2 flex items-center gap-3">
+          <div class="w-10 h-10 ${bgColor} rounded-full flex items-center justify-center text-white font-bold">
+            ${initials}
+          </div>
+          <span>${contact.fullName}</span>
+        </td>
         <td class="px-4 py-2">${contact.phone ?? "-"}</td>
         <td class="px-4 py-2">${contact.email ?? "-"}</td>
         <td class="px-4 py-2">${formattedBirthdate}</td>
@@ -108,21 +117,22 @@ const renderContacts = () => {
         </td>
         
         <td class="px-4 py-2 text-center space-x-3">
-          <a href="/detail/?id=${contact.id}">  
-            <button
-                class="text-blue-600 hover:text-blue-800 transition-colors view-btn"
-                title="View"
-              >
-              <i data-feather="eye"></i>
-            </button>
-          </a>
-          <a href="/edit-contact/?id=${contact.id}">  
-            <button class="text-green-600 hover:text-green-800 transition-colors edit-btn" title="Edit">
-              <i data-feather="edit-2"></i>
-            </button>
-          </a>
           <button
-            class="text-red-600 hover:text-red-800 transition-colors delete-btn"
+            onclick="viewContact(${contact.id})"
+            class="text-blue-600 hover:text-blue-800 transition-colors view-button"
+            title="View"
+          >
+            <i data-feather="eye"></i>
+          </button>
+          <button 
+            onclick="editContact(${contact.id})"
+            class="text-green-600 hover:text-green-800 transition-colors edit-button" 
+            title="Edit"
+          >
+            <i data-feather="edit-2"></i>
+          </button>
+          <button
+            class="text-red-600 hover:text-red-800 transition-colors delete-button"
             title="Delete"
             data-id="${contact.id}"
           >
@@ -138,8 +148,16 @@ const renderContacts = () => {
   addDeleteEventListeners();
 };
 
-const addDeleteEventListeners = () => {
-  document.querySelectorAll(".delete-btn").forEach((button) => {
+function editContact(id) {
+  window.location.href = `/edit-contact/?id=${id}`;
+}
+
+function viewContact(id) {
+  window.location.href = `/detail/?id=${id}`;
+}
+
+function addDeleteEventListeners() {
+  document.querySelectorAll(".delete-button").forEach((button) => {
     button.addEventListener("click", (event) => {
       const contactId = parseInt(event.currentTarget.getAttribute("data-id"));
       const contacts = loadContactsFromStorage();
@@ -158,7 +176,7 @@ const addDeleteEventListeners = () => {
       }
     });
   });
-};
+}
 
 // Initial Render
 document.addEventListener("DOMContentLoaded", () => {
