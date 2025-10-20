@@ -1,23 +1,3 @@
-// function renderContacts(dataContacts) {
-//   contacts.forEach((contact) => renderContact(contact));
-// }
-
-// function renderContact(contact) {
-//   const { email, birthdate } = contact;
-//   const labelsString = contact.labels.length ? contact.labels.join(", ") : "-";
-//   const birthdateString = birthdate
-//     ? new Date(birthdate).toLocaleDateString("en-US", medium)
-//     : "-";
-//   console.log(`
-//      🙎${contact.fullName}
-//      📱${contact.phone}
-//      📧${email || "-"}
-//      🎂${birthdateString}
-//      🏠${contact.address || "-"}
-//      🏷️Labels: ${labelsString}
-//     `);
-// }
-
 const showNotification = (message, type = "info") => {
   const notificationContainer = document.getElementById(
     "notification-container"
@@ -42,12 +22,7 @@ const showNotification = (message, type = "info") => {
 
 function getContactDetailsById(dataContacts, id) {
   const contact = dataContacts.find((contact) => contact.id === id);
-
-  if (contact) {
-    renderContact(contact);
-  } else {
-    console.log("Contact not found");
-  }
+  return contact;
 }
 
 function searchContacts(dataContacts, keyword) {
@@ -82,11 +57,6 @@ function addContact(dataContacts, newContactData) {
     address: newContactData.address ?? null,
     labels: Array.isArray(newContactData.labels) ? newContactData.labels : [],
   };
-
-  if (newContact.fullName.trim() === "") {
-    showNotification("Full name is required to add a contact.", "error");
-    return dataContacts;
-  }
 
   if (!newContact.phone && !newContact.email) {
     showNotification(
@@ -131,15 +101,27 @@ function deleteContactById(dataContacts, id) {
   }
 }
 
-function editContactById(dataContacts, id, updatedInfo) {
+function editContactById(dataContacts, id, updatedFields) {
+  //VALIDATION SECTION
+  if (!updatedFields.phone && !updatedFields.email) {
+    showNotification(
+      "At least one contact method (phone or email) is required.",
+      "error"
+    );
+    return dataContacts;
+  }
+
+  //UPDATE SECTION
   const updatedContacts = dataContacts.map((contact) => {
     if (contact.id === id) {
-      return { ...contact, ...updatedInfo };
+      return { ...contact, ...updatedFields };
     }
     return contact;
   });
 
-  console.log("Contact updated:", { id, ...updatedInfo });
   saveContactsToStorage(updatedContacts);
-  goToHomePage();
+  showNotification("Contact updated succesfully", "success");
+  setTimeout(() => {
+    goToHomePage();
+  }, 3000);
 }
