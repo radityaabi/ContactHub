@@ -26,16 +26,16 @@ function getFormData() {
   if (formData.get("friend")) labels.push("friend");
   if (formData.get("work")) labels.push("work");
 
-  const fullName = formData.get("full-name");
+  const fullName = formData.get("full-name").toString();
   const initials = getInitials(fullName);
   const backgroundColor = getColorForInitial(initials);
 
   return {
     fullName: fullName,
-    phone: formData.get("phone") || null,
-    email: formData.get("email") || null,
-    address: formData.get("address") || null,
-    birthdate: formData.get("birthdate") || null,
+    phone: formData.get("phone").toString() || null,
+    email: formData.get("email").toString() || null,
+    address: formData.get("address").toString() || null,
+    birthdate: new Date(formData.get("birthdate")) || null,
     labels: labels,
     color: backgroundColor,
   };

@@ -58,11 +58,11 @@ function getFormData() {
   if (formData.get("work")) labels.push("work");
 
   return {
-    fullName: formData.get("full-name"),
-    phone: formData.get("phone") || null,
-    email: formData.get("email") || null,
-    address: formData.get("address") || null,
-    birthdate: formData.get("birthdate") || null,
+    fullName: formData.get("full-name").toString(),
+    phone: formData.get("phone").toString() || null,
+    email: formData.get("email").toString() || null,
+    address: formData.get("address").toString() || null,
+    birthdate: new Date(formData.get("birthdate")) || null,
     labels: labels,
   };
 }
