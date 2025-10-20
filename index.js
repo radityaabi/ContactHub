@@ -64,6 +64,15 @@ const renderContacts = () => {
     contactsToRender = contacts;
   }
 
+  contactsToRender.sort((a, b) => {
+    const nameA = a.fullName.toLowerCase();
+    const nameB = b.fullName.toLowerCase();
+
+    if (nameA < nameB) return -1;
+    if (nameA > nameB) return 1;
+    return 0;
+  });
+
   if (contactsToRender.length === 0) {
     const noResultsRow = `
       <tr>

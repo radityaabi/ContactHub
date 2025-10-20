@@ -23,14 +23,20 @@ function getColorForInitial(initials) {
     "bg-teal-500",
     "bg-indigo-500",
     "bg-orange-500",
+    "bg-cyan-500",
+    "bg-emerald-500",
+    "bg-violet-500",
+    "bg-fuchsia-500",
+    "bg-rose-500",
+    "bg-amber-500",
+    "bg-lime-500",
+    "bg-sky-500",
+    "bg-stone-500",
+    "bg-slate-500",
+    "bg-zinc-500",
   ];
 
-  let hash = 0;
-  for (let i = 0; i < initials.length; i++) {
-    hash = initials.charCodeAt(i) + ((hash << 5) - hash);
-  }
-
-  let index = Math.abs(hash) % colors.length;
+  let index = Math.floor(Math.random() * colors.length);
   return colors[index];
 }
 
