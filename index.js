@@ -151,8 +151,7 @@ function addDeleteEventListeners() {
         if (confirm("Are you sure you want to delete this contact?")) {
           deleteContactById(contacts, contactId);
           showNotification("Contact deleted successfully", "success");
-          renderContacts();
-          feather.replace();
+          goToHomePage();
         } else {
           showNotification("Contact deletion cancelled", "info");
         }
