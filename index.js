@@ -151,7 +151,9 @@ function addDeleteEventListeners() {
         if (confirm("Are you sure you want to delete this contact?")) {
           deleteContactById(contacts, contactId);
           showNotification("Contact deleted successfully", "success");
-          goToHomePage();
+          setTimeout(function () {
+            goToHomePage();
+          }, 3000);
         } else {
           showNotification("Contact deletion cancelled", "info");
         }
