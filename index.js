@@ -53,16 +53,11 @@ const renderContacts = () => {
 
   contactsTableBody.innerHTML = "";
 
-  let contactsToRender = [];
-
-  if (keyword) {
-    contactsToRender = searchContacts(contacts, keyword);
-  } else if (labelFilter) {
-    console.log(labelFilter);
-    contactsToRender = filterContactsByLabel(contacts, labelFilter);
-  } else {
-    contactsToRender = contacts;
-  }
+  let contactsToRender = keyword
+    ? searchContacts(contacts, keyword)
+    : labelFilter
+    ? filterContactsByLabel(contacts, labelFilter)
+    : contacts;
 
   contactsToRender.sort((a, b) => {
     const nameA = a.fullName.toLowerCase();
