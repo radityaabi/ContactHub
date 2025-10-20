@@ -26,7 +26,7 @@ function getFormData() {
   if (formData.get("friend")) labels.push("friend");
   if (formData.get("work")) labels.push("work");
 
-  const fullName = formData.get("fullName");
+  const fullName = formData.get("full-name");
   const initials = getInitials(fullName);
   const backgroundColor = getColorForInitial(initials);
 

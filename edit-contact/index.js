@@ -26,7 +26,7 @@ renderEditContactById(id);
 function renderEditContactById(id) {
   const contact = getContactDetailsById(dataContacts, id);
 
-  document.getElementById("fullName").defaultValue = contact.fullName;
+  document.getElementById("full-name").defaultValue = contact.fullName;
   document.getElementById("phone").defaultValue = contact.phone ?? "";
   document.getElementById("email").defaultValue = contact.email ?? "";
   document.getElementById("address").defaultValue = contact.address ?? "";
@@ -58,7 +58,7 @@ function getFormData() {
   if (formData.get("work")) labels.push("work");
 
   return {
-    fullName: formData.get("fullName"),
+    fullName: formData.get("full-name"),
     phone: formData.get("phone") || null,
     email: formData.get("email") || null,
     address: formData.get("address") || null,
