@@ -29,8 +29,7 @@ function renderContactById() {
     <div class="flex items-center gap-5 border-b pb-5 mb-5">
       ${(function () {
         const initials = getInitials(contact.fullName);
-        const bgColor = contact.color;
-        return `<div class="w-16 h-16 ${bgColor} rounded-full flex items-center justify-center text-white text-2xl font-bold"> ${initials} </div>`;
+        return `<div class="w-16 h-16 ${contact.color} rounded-full flex items-center justify-center text-white text-2xl font-bold"> ${initials} </div>`;
       })()}
       <div>
         <h1 class="text-2xl font-bold">${contact.fullName || "Unknown"}</h1>
