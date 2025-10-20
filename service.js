@@ -53,7 +53,7 @@ function formattedBirthdate(birthdate) {
   return "-";
 }
 
-const showNotification = (message, type = "info") => {
+function showNotification(message, type = "info") {
   const notificationContainer = document.getElementById(
     "notification-container"
   );
@@ -73,7 +73,7 @@ const showNotification = (message, type = "info") => {
   setTimeout(() => {
     notificationContainer.removeChild(notification);
   }, 3000);
-};
+}
 
 function getContactDetailsById(dataContacts, id) {
   const contact = dataContacts.find((contact) => contact.id === id);
