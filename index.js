@@ -129,6 +129,9 @@ const renderContacts = () => {
 
   const contactsTableBody = document.getElementById("contacts-table");
   const contactsMobileContainer = document.getElementById("contacts-mobile");
+  const desktopContactCount = document.getElementById("desktop-contact-count");
+  const mobileContactCount = document.getElementById("mobile-contact-count");
+  const mobileFilterInfo = document.getElementById("mobile-filter-info");
 
   contactsTableBody.innerHTML = "";
   if (contactsMobileContainer) {
@@ -140,6 +143,22 @@ const renderContacts = () => {
     : labelFilter
     ? filterContactsByLabel(contacts, labelFilter)
     : contacts;
+
+  updateContactCount(
+    desktopContactCount,
+    contactsToRender.length,
+    contacts.length,
+    keyword,
+    labelFilter
+  );
+
+  updateContactCount(
+    mobileContactCount,
+    contactsToRender.length,
+    contacts.length,
+    keyword,
+    labelFilter
+  );
 
   contactsToRender.sort((a, b) => {
     const nameA = a.fullName.toLowerCase();
@@ -303,6 +322,45 @@ const renderContacts = () => {
   setupMobileMenu();
   feather.replace();
 };
+
+function updateContactCount(
+  element,
+  currentCount,
+  totalCount,
+  keyword,
+  labelFilter
+) {
+  if (!element) return;
+
+  const countNumber = element.querySelector(".contact-count-number");
+  const countText = element.querySelector(".contact-count-text");
+  const icon = element.querySelector("i");
+
+  if (countNumber) {
+    countNumber.textContent = currentCount;
+  }
+
+  if (keyword) {
+    element.className =
+      "bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full flex items-center gap-2";
+    if (icon) icon.setAttribute("data-feather", "search");
+    if (countText) countText.textContent = `of ${totalCount}`;
+  } else if (labelFilter) {
+    element.className =
+      "bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full flex items-center gap-2";
+    if (icon) icon.setAttribute("data-feather", "tag");
+    if (countText) countText.textContent = `of ${totalCount}`;
+  } else {
+    element.className =
+      "bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full flex items-center gap-2";
+    if (icon) icon.setAttribute("data-feather", "users");
+  }
+
+  // Refresh feather icons
+  if (icon) {
+    feather.replace();
+  }
+}
 
 function editContactPage(id) {
   window.location.href = `/edit-contact/?id=${id}`;
