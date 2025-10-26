@@ -2,20 +2,39 @@ const addContactFormElement = document.getElementById("add-contact-form");
 
 let dataContacts = loadContactsFromStorage();
 
-addContactFormElement.addEventListener("submit", function (event) {
-  event.preventDefault();
-  addContact(dataContacts, getFormData());
-});
+function initializeAddContactPage() {
+  // Initialize search components
+  const desktopSearch = new SearchComponent(
+    "search-container-desktop",
+    "desktop"
+  );
+  const mobileSearch = new SearchComponent("search-container-mobile", "mobile");
 
-document.addEventListener("DOMContentLoaded", function () {
-  const cancelButton = document.querySelector('button[type="button"]');
+  desktopSearch.initialize();
+  mobileSearch.initialize();
 
+  // Setup mobile menu
+  setupMobileMenu();
+
+  // Setup form event listeners
+  setupFormEventListeners();
+}
+
+function setupFormEventListeners() {
+  // Form submit event
+  addContactFormElement.addEventListener("submit", function (event) {
+    event.preventDefault();
+    addContact(dataContacts, getFormData());
+  });
+
+  // Cancel button event
+  const cancelButton = document.querySelector(".cancel-button");
   if (cancelButton) {
     cancelButton.addEventListener("click", function () {
       goToDashboardPage();
     });
   }
-});
+}
 
 function getFormData() {
   const formData = new FormData(addContactFormElement);
@@ -32,11 +51,19 @@ function getFormData() {
 
   return {
     fullName: fullName,
-    phone: formData.get("phone").toString() || null,
-    email: formData.get("email").toString() || null,
-    address: formData.get("address").toString() || null,
-    birthdate: new Date(formData.get("birthdate")) || null,
+    phone: formData.get("phone")?.toString() || null,
+    email: formData.get("email")?.toString() || null,
+    address: formData.get("address")?.toString() || null,
+    birthdate: formData.get("birthdate")
+      ? new Date(formData.get("birthdate"))
+      : null,
     labels: labels,
     color: backgroundColor,
   };
 }
+
+// Initial render
+document.addEventListener("DOMContentLoaded", function () {
+  initializeAddContactPage();
+  feather.replace();
+});

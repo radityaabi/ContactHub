@@ -1,3 +1,290 @@
+class SearchPopup {
+  constructor(searchInputId, resultsContainerId, type = "desktop") {
+    this.searchInputId = searchInputId;
+    this.resultsContainerId = resultsContainerId;
+    this.type = type;
+    this.searchTimeout = null;
+    this.debounceDelay = 200;
+    this.isOpen = false;
+  }
+
+  initialize() {
+    const searchInput = document.getElementById(this.searchInputId);
+    const resultsContainer = document.getElementById(this.resultsContainerId);
+
+    if (!searchInput || !resultsContainer) return;
+
+    searchInput.addEventListener("input", (event) => {
+      this.handleSearchInput(event.target.value);
+    });
+
+    // Focus event
+    searchInput.addEventListener("focus", () => {
+      const currentValue = searchInput.value.trim();
+      if (currentValue) {
+        this.showResults(currentValue);
+      }
+    });
+
+    // Click outside to close
+    document.addEventListener("click", (event) => {
+      if (
+        !searchInput.contains(event.target) &&
+        !resultsContainer.contains(event.target)
+      ) {
+        this.hideResults();
+      }
+    });
+
+    // Escape key to close
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        this.hideResults();
+      }
+    });
+  }
+
+  handleSearchInput(searchTerm) {
+    // Clear previous timeout
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
+
+    this.searchTimeout = setTimeout(() => {
+      if (searchTerm.trim()) {
+        this.showResults(searchTerm.trim());
+      } else {
+        this.hideResults();
+      }
+    }, this.debounceDelay);
+  }
+
+  showResults(searchTerm) {
+    const contacts = loadContactsFromStorage();
+    const filteredContacts = this.searchContacts(contacts, searchTerm);
+    this.renderResults(filteredContacts, searchTerm);
+    this.isOpen = true;
+  }
+
+  hideResults() {
+    const resultsContainer = document.getElementById(this.resultsContainerId);
+    resultsContainer.classList.add("hidden");
+    this.isOpen = false;
+  }
+
+  searchContacts(contacts, searchTerm) {
+    const normalizedSearchTerm = searchTerm.toLowerCase();
+
+    return contacts
+      .filter((contact) => {
+        const searchFields = [
+          contact.fullName?.toLowerCase(),
+          contact.email?.toLowerCase(),
+        ].filter(Boolean);
+
+        return searchFields.some((field) =>
+          field.includes(normalizedSearchTerm)
+        );
+      })
+      .slice(0, 8); // Limit to 8 results
+  }
+
+  renderResults(contacts, searchTerm) {
+    const resultsContainer = document.getElementById(this.resultsContainerId);
+
+    if (contacts.length === 0) {
+      resultsContainer.innerHTML = `
+        <div class="p-4 text-center text-gray-500">
+          <i data-feather="search" class="w-8 h-8 mx-auto mb-2 text-gray-300"></i>
+          <p>No contacts found for "${searchTerm}"</p>
+        </div>
+      `;
+    } else {
+      resultsContainer.innerHTML = contacts
+        .map(
+          (contact) => `
+        <div 
+          class="p-3 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors duration-150"
+          onclick="handleSearchResultClick(${contact.id})"
+        >
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 ${
+              contact.color
+            } rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+              ${getInitials(contact.fullName)}
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="font-medium text-gray-900 truncate">${
+                contact.fullName
+              }</div>
+              ${
+                contact.email
+                  ? `<div class="text-sm text-gray-500 truncate">${contact.email}</div>`
+                  : ""
+              }
+            </div>
+          </div>
+        </div>
+      `
+        )
+        .join("");
+    }
+
+    resultsContainer.classList.remove("hidden");
+    feather.replace();
+  }
+}
+
+class SearchComponent {
+  constructor(containerId, type = "desktop") {
+    this.containerId = containerId;
+    this.type = type;
+    this.searchInputId = `search-input-${type}`;
+    this.clearButtonId = `clear-search-${type}`;
+    this.formId = `search-contact-form-${type}`;
+  }
+
+  render() {
+    const isDesktop = this.type === "desktop";
+    const inputClass = isDesktop
+      ? "pl-12 pr-12 py-3 bg-white rounded-lg border border-gray-300 w-full shadow-sm text-lg"
+      : "pl-10 pr-10 py-2 bg-white rounded-md border border-gray-300 w-full shadow-sm text-sm";
+
+    const iconSize = isDesktop ? "w-5 h-5" : "w-4 h-4";
+    const iconPosition = isDesktop ? "left-4" : "left-3";
+    const clearButtonPosition = isDesktop ? "right-4" : "right-3";
+
+    const currentSearchValue = this.getCurrentSearchValue();
+    const showClearButton = this.shouldShowClearButton();
+
+    return `
+      <form id="${this.formId}" method="get" class="w-full relative">
+        <i
+          data-feather="search"
+          class="absolute ${iconPosition} top-1/2 transform -translate-y-1/2 text-gray-400 ${iconSize}"
+        ></i>
+        <input
+          type="text"
+          name="q"
+          placeholder="Search contact..."
+          class="${inputClass}"
+          id="${this.searchInputId}"
+          value="${currentSearchValue}"
+          autocomplete="off"
+        />
+        <!-- Clear Button -->
+        <button
+          type="button"
+          id="${this.clearButtonId}"
+          class="absolute ${clearButtonPosition} top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors ${
+      showClearButton ? "" : "hidden"
+    }"
+        >
+          <i data-feather="x" class="${iconSize}"></i>
+        </button>
+      </form>
+    `;
+  }
+
+  getCurrentSearchValue() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("q") || "";
+  }
+
+  shouldShowClearButton() {
+    return !!this.getCurrentSearchValue();
+  }
+
+  initialize() {
+    const container = document.getElementById(this.containerId);
+    if (!container) return;
+
+    container.innerHTML = this.render();
+    this.setupEventListeners();
+    feather.replace();
+
+    // Initialize search popup
+    initializeSearchPopup(this.type);
+  }
+
+  setupEventListeners() {
+    const searchInput = document.getElementById(this.searchInputId);
+    const clearButton = document.getElementById(this.clearButtonId);
+    const searchForm = document.getElementById(this.formId);
+
+    if (!searchInput || !clearButton || !searchForm) return;
+
+    // Form submission
+    searchForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      this.handleSearch();
+    });
+
+    // Clear button
+    clearButton.addEventListener("click", () => {
+      this.clearSearch();
+    });
+
+    // Input event for showing/hiding clear button
+    searchInput.addEventListener("input", () => {
+      this.toggleClearButton(searchInput.value.length > 0);
+    });
+
+    // Initialize clear button state
+    this.toggleClearButton(this.shouldShowClearButton());
+  }
+
+  handleSearch() {
+    const searchInput = document.getElementById(this.searchInputId);
+    const searchTerm = searchInput.value.trim();
+
+    const url = searchTerm ? `/?q=${encodeURIComponent(searchTerm)}` : "/";
+    window.location.href = url;
+  }
+
+  clearSearch() {
+    const searchInput = document.getElementById(this.searchInputId);
+    searchInput.value = "";
+    this.toggleClearButton(false);
+
+    // Hide search results popup
+    const resultsContainerId =
+      this.type === "desktop"
+        ? "search-results-desktop"
+        : "search-results-mobile";
+    const resultsContainer = document.getElementById(resultsContainerId);
+    if (resultsContainer) {
+      resultsContainer.classList.add("hidden");
+    }
+  }
+
+  toggleClearButton(show) {
+    const clearButton = document.getElementById(this.clearButtonId);
+    if (clearButton) {
+      if (show) {
+        clearButton.classList.remove("hidden");
+      } else {
+        clearButton.classList.add("hidden");
+      }
+    }
+  }
+}
+
+function handleSearchResultClick(contactId) {
+  window.location.href = `/detail/?id=${contactId}`;
+}
+
+function initializeSearchPopup(type = "desktop") {
+  const searchInputId =
+    type === "desktop" ? "search-input-desktop" : "search-input-mobile";
+  const resultsContainerId =
+    type === "desktop" ? "search-results-desktop" : "search-results-mobile";
+
+  const searchPopup = new SearchPopup(searchInputId, resultsContainerId, type);
+  searchPopup.initialize();
+  return searchPopup;
+}
+
 function goToDashboardPage() {
   window.location = "/";
 }
@@ -83,7 +370,7 @@ function showNotification(message, type = "info") {
 
   setTimeout(() => {
     notificationContainer.removeChild(notification);
-  }, 300);
+  }, 500);
 }
 
 function getContactDetailsById(dataContacts, id) {
@@ -192,3 +479,93 @@ function editContactById(dataContacts, id, updatedFields) {
     goToDashboardPage();
   }, 300);
 }
+
+function initializeMobileNavigation() {
+  const mobileMenuButton = document.getElementById("mobile-menu-button");
+  const closeSidebarButton = document.getElementById("close-sidebar");
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("sidebar-overlay");
+
+  if (!mobileMenuButton || !sidebar || !overlay) return;
+
+  function openSidebar() {
+    sidebar.classList.remove("-translate-x-full");
+    overlay.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeSidebar() {
+    sidebar.classList.add("-translate-x-full");
+    overlay.classList.add("hidden");
+    document.body.style.overflow = "";
+  }
+
+  mobileMenuButton.addEventListener("click", openSidebar);
+
+  if (closeSidebarButton) {
+    closeSidebarButton.addEventListener("click", closeSidebar);
+  }
+
+  overlay.addEventListener("click", closeSidebar);
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth >= 1024) {
+      closeSidebar();
+    }
+  });
+}
+
+function setupMobileMenu() {
+  const mobileMenuButton = document.getElementById("mobile-menu-button");
+  const closeSidebarButton = document.getElementById("close-sidebar");
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("sidebar-overlay");
+
+  function openSidebar() {
+    sidebar.classList.remove("-translate-x-full");
+    overlay.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeSidebar() {
+    sidebar.classList.add("-translate-x-full");
+    overlay.classList.add("hidden");
+    document.body.style.overflow = "";
+  }
+
+  if (mobileMenuButton) {
+    mobileMenuButton.addEventListener("click", openSidebar);
+  }
+
+  if (closeSidebarButton) {
+    closeSidebarButton.addEventListener("click", closeSidebar);
+  }
+
+  if (overlay) {
+    overlay.addEventListener("click", closeSidebar);
+  }
+
+  // Close sidebar when clicking on nav links (mobile)
+  const sidebarLinks = sidebar.querySelectorAll("a");
+  sidebarLinks.forEach((link) => {
+    link.addEventListener("click", closeSidebar);
+  });
+
+  // Close sidebar on escape key
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeSidebar();
+    }
+  });
+
+  // Close sidebar when window is resized to desktop
+  window.addEventListener("resize", () => {
+    if (window.innerWidth >= 1024) {
+      closeSidebar();
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  initializeMobileNavigation();
+});

@@ -1,4 +1,3 @@
-// Contacts Data
 const initialContacts = [
   {
     id: 1,
@@ -30,6 +29,26 @@ const initialContacts = [
     labels: ["work"],
     color: "bg-red-500",
   },
+  {
+    id: 4,
+    fullName: "Mama Radit",
+    phone: "08923194194",
+    email: "",
+    birthdate: new Date("1969-08-10"),
+    address: "",
+    labels: ["client", "family", "friend", "work"],
+    color: "bg-purple-500",
+  },
+  {
+    id: 5,
+    fullName: "Raditya Abiansyah",
+    phone: "",
+    email: "",
+    birthdate: null,
+    address: "",
+    labels: [],
+    color: "bg-yellow-500",
+  },
 ];
 
 const setInitialContacts = () => {
@@ -44,14 +63,27 @@ const renderContacts = () => {
   setInitialContacts();
   const contacts = loadContactsFromStorage();
 
+  const desktopSearch = new SearchComponent(
+    "search-container-desktop",
+    "desktop"
+  );
+  const mobileSearch = new SearchComponent("search-container-mobile", "mobile");
+
+  desktopSearch.initialize();
+  mobileSearch.initialize();
+
   const queryString = window.location.search;
   const params = new URLSearchParams(queryString);
   const keyword = params.get("q");
   const labelFilter = params.get("tag");
 
   const contactsTableBody = document.getElementById("contacts-table");
+  const contactsMobileContainer = document.getElementById("contacts-mobile");
 
   contactsTableBody.innerHTML = "";
+  if (contactsMobileContainer) {
+    contactsMobileContainer.innerHTML = "";
+  }
 
   let contactsToRender = keyword
     ? searchContacts(contacts, keyword)
@@ -77,9 +109,20 @@ const renderContacts = () => {
       </tr>
     `;
     contactsTableBody.innerHTML = noResultsRow;
+
+    if (contactsMobileContainer) {
+      contactsMobileContainer.innerHTML = `
+        <div class="text-center text-gray-500 py-8">
+          ${
+            keyword ? `No contacts found for "${keyword}"` : "No contacts found"
+          }
+        </div>
+      `;
+    }
     return;
   }
 
+  // Render desktop table
   contactsToRender.forEach((contact) => {
     const labelsString = contact.labels.length
       ? contact.labels
@@ -126,7 +169,89 @@ const renderContacts = () => {
     contactsTableBody.innerHTML += contactRow;
   });
 
+  // Render mobile cards
+  if (contactsMobileContainer) {
+    contactsToRender.forEach((contact) => {
+      const labelsString = contact.labels.length
+        ? contact.labels
+            .map((label) => {
+              const colorClass = getLabelColorClass(label);
+              return `<span class="px-2 py-1 ${colorClass} text-xs rounded">${label}</span>`;
+            })
+            .join(" ")
+        : "";
+
+      const initials = getInitials(contact.fullName);
+
+      const contactCard = `
+        <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm cursor-pointer mb-4" onclick="detailContactPage(${
+          contact.id
+        })">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-12 h-12 ${
+              contact.color
+            } rounded-full flex items-center justify-center text-white font-bold text-lg">
+              ${initials}
+            </div>
+            <div class="flex-1">
+              <h3 class="font-semibold text-lg">${contact.fullName}</h3>
+              <div class="flex flex-wrap gap-1 mt-1">
+                ${labelsString}
+              </div>
+            </div>
+            <button
+              class="text-red-600 hover:text-red-800 transition-colors delete-button p-2"
+              title="Delete"
+              data-id="${contact.id}"
+              onclick="event.stopPropagation()"
+            >
+              <i data-feather="trash-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+          
+          <!-- Contact Info -->
+          <div class="space-y-2 text-sm text-gray-600 ml-15">
+            ${
+              contact.phone
+                ? `
+              <div class="flex items-center gap-2">
+                <i data-feather="phone" class="w-4 h-4 text-gray-400"></i>
+                <span>${contact.phone}</span>
+              </div>
+            `
+                : ""
+            }
+            ${
+              contact.email
+                ? `
+              <div class="flex items-center gap-2">
+                <i data-feather="mail" class="w-4 h-4 text-gray-400"></i>
+                <span>${contact.email}</span>
+              </div>
+            `
+                : ""
+            }
+            ${
+              contact.birthdate
+                ? `
+              <div class="flex items-center gap-2">
+                <i data-feather="calendar" class="w-4 h-4 text-gray-400"></i>
+                <span>${formattedBirthdate(contact.birthdate)}</span>
+              </div>
+            `
+                : ""
+            }
+          </div>
+        </div>
+      `;
+
+      contactsMobileContainer.innerHTML += contactCard;
+    });
+  }
+
   addDeleteEventListeners();
+  setupMobileMenu();
+  feather.replace();
 };
 
 function editContactPage(id) {
@@ -140,6 +265,7 @@ function detailContactPage(id) {
 function addDeleteEventListeners() {
   document.querySelectorAll(".delete-button").forEach((button) => {
     button.addEventListener("click", (event) => {
+      event.stopPropagation();
       const contactId = parseInt(event.currentTarget.getAttribute("data-id"));
       const contacts = loadContactsFromStorage();
 
@@ -163,5 +289,4 @@ function addDeleteEventListeners() {
 // Initial Render
 document.addEventListener("DOMContentLoaded", () => {
   renderContacts();
-  feather.replace();
 });
