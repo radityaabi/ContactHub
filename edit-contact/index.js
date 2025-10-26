@@ -1,35 +1,62 @@
 const editContactFormElement = document.getElementById("edit-contact-form");
-editContactFormElement.reset();
+let dataContacts = loadContactsFromStorage();
+const queryString = window.location.search;
+const params = new URLSearchParams(queryString);
+const id = Number(params.get("id"));
 
-editContactFormElement.addEventListener("submit", function (event) {
-  event.preventDefault();
-  editContactById(dataContacts, id, getFormData());
-});
+function initializeEditContactPage() {
+  // Initialize search components
+  const desktopSearch = new SearchComponent(
+    "search-container-desktop",
+    "desktop"
+  );
+  const mobileSearch = new SearchComponent("search-container-mobile", "mobile");
 
-document.addEventListener("DOMContentLoaded", function () {
-  const cancelButton = document.querySelector('button[type="button"]');
+  desktopSearch.initialize();
+  mobileSearch.initialize();
 
+  // Setup mobile menu
+  setupMobileMenu();
+
+  // Setup form event listeners
+  setupFormEventListeners();
+
+  // Render contact data
+  renderEditContactById(id);
+}
+
+function setupFormEventListeners() {
+  // Form submit event
+  editContactFormElement.addEventListener("submit", function (event) {
+    event.preventDefault();
+    editContactById(dataContacts, id, getFormData());
+  });
+
+  // Cancel button event
+  const cancelButton = document.querySelector(".cancel-button");
   if (cancelButton) {
     cancelButton.addEventListener("click", function () {
       goToDashboardPage();
     });
   }
-});
-
-const dataContacts = loadContactsFromStorage();
-const queryString = window.location.search;
-const params = new URLSearchParams(queryString);
-const id = Number(params.get("id"));
-
-renderEditContactById(id);
+}
 
 function renderEditContactById(id) {
   const contact = getContactDetailsById(dataContacts, id);
 
-  document.getElementById("full-name").defaultValue = contact.fullName;
-  document.getElementById("phone").defaultValue = contact.phone ?? "";
-  document.getElementById("email").defaultValue = contact.email ?? "";
-  document.getElementById("address").defaultValue = contact.address ?? "";
+  if (!contact) {
+    showNotification("Contact not found", "error");
+    setTimeout(() => {
+      goToDashboardPage();
+    }, 300);
+    return;
+  }
+
+  // Populate form fields
+  document.getElementById("full-name").value = contact.fullName || "";
+  document.getElementById("phone").value = contact.phone || "";
+  document.getElementById("email").value = contact.email || "";
+  document.getElementById("address").value = contact.address || "";
 
   if (contact.birthdate) {
     document.getElementById("birthdate").valueAsDate = new Date(
@@ -37,10 +64,10 @@ function renderEditContactById(id) {
     );
   }
 
+  // Set labels
   if (contact.labels) {
     contact.labels.forEach((label) => {
       const checkbox = document.getElementById(label);
-
       if (checkbox) {
         checkbox.checked = true;
       }
@@ -59,10 +86,18 @@ function getFormData() {
 
   return {
     fullName: formData.get("full-name").toString(),
-    phone: formData.get("phone").toString() || null,
-    email: formData.get("email").toString() || null,
-    address: formData.get("address").toString() || null,
-    birthdate: new Date(formData.get("birthdate")) || null,
+    phone: formData.get("phone")?.toString() || null,
+    email: formData.get("email")?.toString() || null,
+    address: formData.get("address")?.toString() || null,
+    birthdate: formData.get("birthdate")
+      ? new Date(formData.get("birthdate"))
+      : null,
     labels: labels,
   };
 }
+
+// Initial Render
+document.addEventListener("DOMContentLoaded", function () {
+  initializeEditContactPage();
+  feather.replace();
+});

@@ -18,7 +18,6 @@ class SearchPopup {
       this.handleSearchInput(event.target.value);
     });
 
-    // Focus event
     searchInput.addEventListener("focus", () => {
       const currentValue = searchInput.value.trim();
       if (currentValue) {
@@ -26,7 +25,6 @@ class SearchPopup {
       }
     });
 
-    // Click outside to close
     document.addEventListener("click", (event) => {
       if (
         !searchInput.contains(event.target) &&
@@ -36,7 +34,6 @@ class SearchPopup {
       }
     });
 
-    // Escape key to close
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") {
         this.hideResults();
@@ -44,25 +41,25 @@ class SearchPopup {
     });
   }
 
-  handleSearchInput(searchTerm) {
+  handleSearchInput(keyword) {
     // Clear previous timeout
     if (this.searchTimeout) {
       clearTimeout(this.searchTimeout);
     }
 
     this.searchTimeout = setTimeout(() => {
-      if (searchTerm.trim()) {
-        this.showResults(searchTerm.trim());
+      if (keyword.trim()) {
+        this.showResults(keyword.trim());
       } else {
         this.hideResults();
       }
     }, this.debounceDelay);
   }
 
-  showResults(searchTerm) {
+  showResults(keyword) {
     const contacts = loadContactsFromStorage();
-    const filteredContacts = this.searchContacts(contacts, searchTerm);
-    this.renderResults(filteredContacts, searchTerm);
+    const filteredContacts = this.searchContacts(contacts, keyword);
+    this.renderResults(filteredContacts, keyword);
     this.isOpen = true;
   }
 
@@ -72,8 +69,8 @@ class SearchPopup {
     this.isOpen = false;
   }
 
-  searchContacts(contacts, searchTerm) {
-    const normalizedSearchTerm = searchTerm.toLowerCase();
+  searchContacts(contacts, keyword) {
+    const normalizedKeyword = keyword.toLowerCase();
 
     return contacts
       .filter((contact) => {
@@ -82,21 +79,19 @@ class SearchPopup {
           contact.email?.toLowerCase(),
         ].filter(Boolean);
 
-        return searchFields.some((field) =>
-          field.includes(normalizedSearchTerm)
-        );
+        return searchFields.some((field) => field.includes(normalizedKeyword));
       })
       .slice(0, 8); // Limit to 8 results
   }
 
-  renderResults(contacts, searchTerm) {
+  renderResults(contacts, keyword) {
     const resultsContainer = document.getElementById(this.resultsContainerId);
 
     if (contacts.length === 0) {
       resultsContainer.innerHTML = `
         <div class="p-4 text-center text-gray-500">
           <i data-feather="search" class="w-8 h-8 mx-auto mb-2 text-gray-300"></i>
-          <p>No contacts found for "${searchTerm}"</p>
+          <p>No contacts found for "${keyword}"</p>
         </div>
       `;
     } else {
@@ -203,7 +198,6 @@ class SearchComponent {
     this.setupEventListeners();
     feather.replace();
 
-    // Initialize search popup
     initializeSearchPopup(this.type);
   }
 
@@ -220,25 +214,22 @@ class SearchComponent {
       this.handleSearch();
     });
 
-    // Clear button
     clearButton.addEventListener("click", () => {
       this.clearSearch();
     });
 
-    // Input event for showing/hiding clear button
     searchInput.addEventListener("input", () => {
       this.toggleClearButton(searchInput.value.length > 0);
     });
 
-    // Initialize clear button state
     this.toggleClearButton(this.shouldShowClearButton());
   }
 
   handleSearch() {
     const searchInput = document.getElementById(this.searchInputId);
-    const searchTerm = searchInput.value.trim();
+    const keyword = searchInput.value.trim();
 
-    const url = searchTerm ? `/?q=${encodeURIComponent(searchTerm)}` : "/";
+    const url = keyword ? `/?q=${encodeURIComponent(keyword)}` : "/";
     window.location.href = url;
   }
 
@@ -456,7 +447,6 @@ function deleteContactById(dataContacts, id) {
 }
 
 function editContactById(dataContacts, id, updatedFields) {
-  //VALIDATION SECTION
   if (!updatedFields.phone && !updatedFields.email) {
     showNotification(
       "At least one contact method (phone or email) is required.",
@@ -465,7 +455,6 @@ function editContactById(dataContacts, id, updatedFields) {
     return dataContacts;
   }
 
-  //UPDATE SECTION
   const updatedContacts = dataContacts.map((contact) => {
     if (contact.id === id) {
       return { ...contact, ...updatedFields };
