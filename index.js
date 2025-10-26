@@ -267,21 +267,7 @@ function addDeleteEventListeners() {
     button.addEventListener("click", (event) => {
       event.stopPropagation();
       const contactId = parseInt(event.currentTarget.getAttribute("data-id"));
-      const contacts = loadContactsFromStorage();
-
-      try {
-        if (confirm("Are you sure you want to delete this contact?")) {
-          deleteContactById(contacts, contactId);
-          showNotification("Contact deleted successfully", "success");
-          setTimeout(() => {
-            goToDashboardPage();
-          }, 300);
-        } else {
-          showNotification("Contact deletion cancelled", "info");
-        }
-      } catch (error) {
-        showNotification(error.message, "error");
-      }
+      showDeleteConfirmationModal(contactId);
     });
   });
 }

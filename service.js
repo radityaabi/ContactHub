@@ -446,6 +446,60 @@ function deleteContactById(dataContacts, id) {
   }
 }
 
+function showDeleteConfirmationModal(contactId) {
+  const modal = document.getElementById("delete-confirm-modal");
+  const confirmBtn = document.getElementById("confirm-delete-btn");
+  const cancelBtn = document.getElementById("cancel-delete-btn");
+  const backdrop = document.getElementById("modal-backdrop");
+
+  // Show modal
+  modal.classList.remove("hidden");
+
+  // Refresh feather icons
+  feather.replace();
+
+  // Remove any existing event listeners
+  const newConfirmBtn = confirmBtn.cloneNode(true);
+  const newCancelBtn = cancelBtn.cloneNode(true);
+
+  confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+  cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
+
+  // Add event listeners to new buttons
+  newConfirmBtn.addEventListener("click", () => {
+    handleDeleteContact(contactId);
+    hideDeleteModal();
+  });
+
+  newCancelBtn.addEventListener("click", () => {
+    hideDeleteModal();
+  });
+
+  // Close modal when clicking backdrop
+  backdrop.addEventListener("click", () => {
+    hideDeleteModal();
+  });
+}
+
+function hideDeleteModal() {
+  const modal = document.getElementById("delete-confirm-modal");
+  modal.classList.add("hidden");
+}
+
+function handleDeleteContact(contactId) {
+  const contacts = loadContactsFromStorage();
+
+  try {
+    deleteContactById(contacts, contactId);
+    showNotification("Contact deleted successfully", "success");
+    setTimeout(() => {
+      goToDashboardPage();
+    }, 300);
+  } catch (error) {
+    showNotification(error.message, "error");
+  }
+}
+
 function editContactById(dataContacts, id, updatedFields) {
   if (!updatedFields.phone && !updatedFields.email) {
     showNotification(
