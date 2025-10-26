@@ -370,9 +370,16 @@ function getContactDetailsById(dataContacts, id) {
 }
 
 function searchContacts(dataContacts, keyword) {
-  return dataContacts.filter((contact) =>
-    contact.fullName.toLowerCase().includes(keyword.toLowerCase())
-  );
+  const normalizedKeyword = keyword.toLowerCase();
+
+  return dataContacts.filter((contact) => {
+    const searchFields = [
+      contact.fullName?.toLowerCase(),
+      contact.email?.toLowerCase(),
+    ].filter(Boolean);
+
+    return searchFields.some((field) => field.includes(normalizedKeyword));
+  });
 }
 
 function filterContactsByLabel(contacts, label) {
