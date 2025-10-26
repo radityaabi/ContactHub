@@ -44,9 +44,16 @@ function renderContactById() {
       ${
         contact.phone
           ? `
-        <div class="flex items-center gap-3">
-          <i data-feather="phone" class="text-blue-700"></i>
+        <div class="flex items-center gap-1">
+          <i data-feather="phone" class="text-blue-700 flex-shrink-0"></i>
           <span>${contact.phone}</span>
+          <button 
+            onclick="copyToClipboard('${contact.phone}', 'phone')" 
+            class="copy-btn opacity-70 hover:opacity-100 transition-opacity duration-200 flex items-center gap-1 text-blue-600 hover:text-blue-700 text-sm px-2 py-1 rounded hover:bg-blue-50 ml-1"
+            title="Copy phone number"
+          >
+            <i data-feather="copy" class="w-4 h-4"></i>
+          </button>
         </div>
       `
           : ""
@@ -55,11 +62,18 @@ function renderContactById() {
       ${
         contact.email
           ? `
-        <div class="flex items-center gap-3">
-          <i data-feather="mail" class="text-blue-700"></i>
-          <a href="mailto:${contact.email}" target="_blank">
+        <div class="flex items-center gap-1">
+          <i data-feather="mail" class="text-blue-700 flex-shrink-0"></i>
+          <a href="mailto:${contact.email}" target="_blank" class="hover:underline">
             <span class="text-blue-600 hover:text-blue-700">${contact.email}</span>
           </a>
+          <button 
+            onclick="copyToClipboard('${contact.email}', 'email')" 
+            class="copy-btn opacity-70 hover:opacity-100 transition-opacity duration-200 flex items-center gap-1 text-blue-600 hover:text-blue-700 text-sm px-2 py-1 rounded hover:bg-blue-50 ml-1"
+            title="Copy email address"
+          >
+            <i data-feather="copy" class="w-4 h-4"></i>
+          </button>
         </div>
       `
           : ""
@@ -68,9 +82,16 @@ function renderContactById() {
       ${
         contact.address
           ? `
-        <div class="flex items-center gap-3">
-          <i data-feather="map-pin" class="text-blue-700"></i>
+        <div class="flex items-center gap-1">
+          <i data-feather="map-pin" class="text-blue-700 flex-shrink-0"></i>
           <span>${contact.address}</span>
+          <button 
+            onclick="copyToClipboard('${contact.address}', 'address')" 
+            class="copy-btn opacity-70 hover:opacity-100 transition-opacity duration-200 flex items-center gap-1 text-blue-600 hover:text-blue-700 text-sm px-2 py-1 rounded hover:bg-blue-50 ml-1"
+            title="Copy address"
+          >
+            <i data-feather="copy" class="w-4 h-4"></i>
+          </button>
         </div>
       `
           : ""
@@ -79,7 +100,7 @@ function renderContactById() {
       ${
         contact.birthdate
           ? `
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-1">
           <i data-feather="calendar" class="text-blue-700"></i>
           <span>${formattedBirthdate(contact.birthdate)}</span>
         </div>
@@ -92,12 +113,12 @@ function renderContactById() {
     <div class="flex gap-4 mt-8">
       <button
         onclick="editContactPage(${contact.id})"
-        class="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 edit-button"
+        class="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer edit-button"
       >
         <i data-feather="edit"></i> Edit
       </button>
       <button
-        class="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 delete-button"
+        class="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 cursor-pointer delete-button"
       >
         <i data-feather="trash-2"></i> Delete
       </button>
@@ -139,6 +160,32 @@ function addDeleteEventListeners(contact) {
 
 function editContactPage(id) {
   window.location.href = `/edit-contact/?id=${id}`;
+}
+
+function copyToClipboard(text, type) {
+  navigator.clipboard
+    .writeText(text)
+    .then(() => {
+      let message = "";
+      switch (type) {
+        case "phone":
+          message = "Phone number copied to clipboard!";
+          break;
+        case "email":
+          message = "Email address copied to clipboard!";
+          break;
+        case "address":
+          message = "Address copied to clipboard!";
+          break;
+        default:
+          message = "Copied to clipboard!";
+      }
+      showNotification(message, "success");
+    })
+    .catch((err) => {
+      console.error("Failed to copy: ", err);
+      showNotification("Failed to copy to clipboard", "error");
+    });
 }
 
 document.addEventListener("DOMContentLoaded", renderContactById);

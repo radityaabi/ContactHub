@@ -93,7 +93,9 @@ const renderContacts = () => {
     const initials = getInitials(contact.fullName);
 
     const contactRow = `
-      <tr class="border-t border-gray-200 hover:bg-gray-50">
+      <tr class="border-t border-gray-200 hover:bg-gray-100 cursor-pointer" onclick="detailContactPage(${
+        contact.id
+      })">
         <td class="px-4 py-2 flex items-center gap-3">
           <div class="w-10 h-10 ${
             contact.color
@@ -111,21 +113,7 @@ const renderContacts = () => {
         
         <td class="px-4 py-2 text-center space-x-3">
           <button
-            onclick="detailContactPage(${contact.id})"
-            class="text-blue-600 hover:text-blue-800 transition-colors view-button"
-            title="View"
-          >
-            <i data-feather="eye"></i>
-          </button>
-          <button 
-            onclick="editContactPage(${contact.id})"
-            class="text-green-600 hover:text-green-800 transition-colors edit-button" 
-            title="Edit"
-          >
-            <i data-feather="edit-2"></i>
-          </button>
-          <button
-            class="text-red-600 hover:text-red-800 transition-colors delete-button"
+            class="text-red-600 hover:text-red-800 transition-colors delete-button cursor-pointer"
             title="Delete"
             data-id="${contact.id}"
           >
