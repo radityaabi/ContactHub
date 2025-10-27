@@ -455,8 +455,8 @@ function deleteContactById(dataContacts, id) {
 
 function showDeleteConfirmationModal(contactId) {
   const modal = document.getElementById("delete-confirm-modal");
-  const confirmbutton = document.getElementById("confirm-delete-button");
-  const cancelbutton = document.getElementById("cancel-delete-button");
+  const confirmButton = document.getElementById("confirm-delete-button");
+  const cancelButton = document.getElementById("cancel-delete-button");
   const backdrop = document.getElementById("modal-backdrop");
 
   // Show modal
@@ -466,19 +466,19 @@ function showDeleteConfirmationModal(contactId) {
   feather.replace();
 
   // Remove any existing event listeners
-  const newConfirmbutton = confirmbutton.cloneNode(true);
-  const newCancelbutton = cancelbutton.cloneNode(true);
+  const newconfirmButton = confirmButton.cloneNode(true);
+  const newcancelButton = cancelButton.cloneNode(true);
 
-  confirmbutton.parentNode.replaceChild(newConfirmbutton, confirmbutton);
-  cancelbutton.parentNode.replaceChild(newCancelbutton, cancelbutton);
+  confirmButton.parentNode.replaceChild(newconfirmButton, confirmButton);
+  cancelButton.parentNode.replaceChild(newcancelButton, cancelButton);
 
   // Add event listeners to new buttons
-  newConfirmbutton.addEventListener("click", () => {
+  newconfirmButton.addEventListener("click", () => {
     handleDeleteContact(contactId);
     hideDeleteModal();
   });
 
-  newCancelbutton.addEventListener("click", () => {
+  newcancelButton.addEventListener("click", () => {
     hideDeleteModal();
   });
 
