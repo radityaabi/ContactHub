@@ -514,6 +514,12 @@ function handleDeleteContact(contactId) {
   }
 }
 
+function handleEscapeKey(event) {
+  if (event.key === "Escape") {
+    hideDeleteModal();
+  }
+}
+
 function editContactById(dataContacts, id, updatedFields) {
   if (!updatedFields.phone && !updatedFields.email) {
     showNotification(
