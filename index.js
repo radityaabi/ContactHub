@@ -113,6 +113,8 @@ function renderContacts() {
   setInitialContacts();
   const contacts = loadContactsFromStorage();
 
+  // TODO: Just use regular Tailwind CSS responsive design classes
+
   const desktopSearch = new SearchComponent(
     "search-container-desktop",
     "desktop"
@@ -121,6 +123,8 @@ function renderContacts() {
 
   desktopSearch.initialize();
   mobileSearch.initialize();
+
+  // TODO: getSearchParams => { keyword, label }
 
   const queryString = window.location.search;
   const params = new URLSearchParams(queryString);
@@ -188,6 +192,9 @@ function renderContacts() {
     }
     return;
   }
+
+  // TODO: Render desktop and mobile should be just
+  // using regular Tailwind CSS classes
 
   // Render desktop table
   contactsToRender.forEach((contact) => {
@@ -314,6 +321,7 @@ function renderContacts() {
 
   addDeleteEventListeners();
   setupMobileMenu();
+
   feather.replace();
 }
 
