@@ -101,15 +101,15 @@ const initialContacts = [
   },
 ];
 
-const setInitialContacts = () => {
+function setInitialContacts() {
   const contacts = loadContactsFromStorage();
 
   if (contacts.length === 0) {
     saveContactsToStorage(initialContacts);
   }
-};
+}
 
-const renderContacts = () => {
+function renderContacts() {
   setInitialContacts();
   const contacts = loadContactsFromStorage();
 
@@ -316,7 +316,7 @@ const renderContacts = () => {
   addDeleteEventListeners();
   setupMobileMenu();
   feather.replace();
-};
+}
 
 function updateContactCount(
   element,
