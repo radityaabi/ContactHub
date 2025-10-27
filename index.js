@@ -353,6 +353,7 @@ function addDeleteEventListeners() {
   document.querySelectorAll(".delete-button").forEach((button) => {
     button.addEventListener("click", (event) => {
       event.preventDefault();
+      event.stopPropagation();
       const contactId = parseInt(event.currentTarget.getAttribute("data-id"));
       showDeleteConfirmationModal(contactId);
     });
