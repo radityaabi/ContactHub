@@ -335,9 +335,9 @@ function updateContactCount(
   }
 
   if (keyword) {
-    if (countText) countText.textContent = `of ${totalCount}`;
+    countText.textContent = `of ${totalCount}`;
   } else if (labelFilter) {
-    if (countText) countText.textContent = `of ${totalCount}`;
+    countText.textContent = `of ${totalCount}`;
   }
 }
 
