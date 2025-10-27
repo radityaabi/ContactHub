@@ -168,7 +168,7 @@ function renderContactById() {
 function addCopyEventListeners() {
   document.querySelectorAll(".copy-btn").forEach((button) => {
     button.addEventListener("click", function (event) {
-      event.stopPropagation();
+      event.preventDefault();
       const textToCopy = this.getAttribute("data-copy");
 
       // Copy to clipboard
@@ -201,7 +201,7 @@ function addDeleteEventListeners(contact) {
   if (!deleteButton) return;
 
   deleteButton.addEventListener("click", function (event) {
-    event.stopPropagation();
+    event.preventDefault();
     showDeleteConfirmationModal(contact.id);
   });
 }

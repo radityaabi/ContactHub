@@ -128,14 +128,14 @@ const renderContacts = () => {
   const labelFilter = params.get("tag");
 
   const contactsTableBody = document.getElementById("contacts-table");
-  const contactsMobileContainer = document.getElementById("contacts-mobile");
-  const desktopContactCount = document.getElementById("desktop-contact-count");
-  const mobileContactCount = document.getElementById("mobile-contact-count");
-  const mobileFilterInfo = document.getElementById("mobile-filter-info");
+  const contactsMobileTableBody = document.getElementById(
+    "contacts-mobile-table"
+  );
+  const contactCountElements = document.querySelectorAll(".contact-count");
 
   contactsTableBody.innerHTML = "";
-  if (contactsMobileContainer) {
-    contactsMobileContainer.innerHTML = "";
+  if (contactsMobileTableBody) {
+    contactsMobileTableBody.innerHTML = "";
   }
 
   let contactsToRender = keyword
@@ -144,21 +144,15 @@ const renderContacts = () => {
     ? filterContactsByLabel(contacts, labelFilter)
     : contacts;
 
-  updateContactCount(
-    desktopContactCount,
-    contactsToRender.length,
-    contacts.length,
-    keyword,
-    labelFilter
-  );
-
-  updateContactCount(
-    mobileContactCount,
-    contactsToRender.length,
-    contacts.length,
-    keyword,
-    labelFilter
-  );
+  contactCountElements.forEach((element) => {
+    updateContactCount(
+      element,
+      contactsToRender.length,
+      contacts.length,
+      keyword,
+      labelFilter
+    );
+  });
 
   contactsToRender.sort((a, b) => {
     const nameA = a.fullName.toLowerCase();
@@ -179,13 +173,17 @@ const renderContacts = () => {
     `;
     contactsTableBody.innerHTML = noResultsRow;
 
-    if (contactsMobileContainer) {
-      contactsMobileContainer.innerHTML = `
-        <div class="text-center text-gray-500 py-8">
-          ${
-            keyword ? `No contacts found for "${keyword}"` : "No contacts found"
-          }
-        </div>
+    if (contactsMobileTableBody) {
+      contactsMobileTableBody.innerHTML = `
+        <tr>
+          <td colspan="1" class="px-4 py-8 text-center text-gray-500 text-sm">
+            ${
+              keyword
+                ? `No contacts found for "${keyword}"`
+                : "No contacts found"
+            }
+          </td>
+        </tr>
       `;
     }
     return;
@@ -238,83 +236,80 @@ const renderContacts = () => {
     contactsTableBody.innerHTML += contactRow;
   });
 
-  // Render mobile cards
-  if (contactsMobileContainer) {
+  // Render mobile table
+  if (contactsMobileTableBody) {
     contactsToRender.forEach((contact) => {
-      const labelsString = contact.labels.length
-        ? contact.labels
-            .map((label) => {
-              const colorClass = getLabelColorClass(label);
-              return `<span class="px-2 py-1 ${colorClass} text-xs rounded">${label}</span>`;
-            })
-            .join(" ")
-        : "";
-
       const initials = getInitials(contact.fullName);
 
-      const contactCard = `
-        <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm cursor-pointer mb-4" onclick="detailContactPage(${
+      const contactRow = `
+        <tr class="border-t border-gray-200 hover:bg-gray-50 cursor-pointer" onclick="detailContactPage(${
           contact.id
         })">
-          <div class="flex items-center gap-3 mb-3">
-            <div class="w-12 h-12 ${
-              contact.color
-            } rounded-full flex items-center justify-center text-white font-bold text-lg">
-              ${initials}
-            </div>
-            <div class="flex-1">
-              <h3 class="font-semibold text-lg">${contact.fullName}</h3>
-              <div class="flex flex-wrap gap-1 mt-1">
-                ${labelsString}
+          <td class="px-4 py-3">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 ${
+                contact.color
+              } rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0 mt-1">
+                ${initials}
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between">
+                  <div class="font-semibold text-gray-900 text-base">${
+                    contact.fullName
+                  }</div>
+                  <button
+                    class="text-red-600 hover:text-red-800 transition-colors delete-button p-2 ml-2 flex-shrink-0"
+                    title="Delete"
+                    data-id="${contact.id}"
+                    onclick="event.stopPropagation(); event.preventDefault();"
+                  >
+                    <i data-feather="trash-2" class="w-4 h-4"></i>
+                  </button>
+                </div>
+                
+                ${
+                  contact.phone
+                    ? `
+                <div class="flex items-center gap-2 text-sm text-gray-600 mb-1">
+                  <i data-feather="phone" class="w-4 h-4 text-gray-400"></i>
+                  <span>${contact.phone}</span>
+                </div>
+                `
+                    : ""
+                }
+                
+                ${
+                  contact.email
+                    ? `
+                <div class="flex items-center gap-2 text-sm text-gray-600 mb-2">
+                  <i data-feather="mail" class="w-4 h-4 text-gray-400"></i>
+                  <span class="truncate">${contact.email}</span>
+                </div>
+                `
+                    : ""
+                }
+                
+                ${
+                  contact.labels && contact.labels.length > 0
+                    ? `<div class="flex flex-wrap gap-1 mt-1">
+                         ${contact.labels
+                           .map(
+                             (label) =>
+                               `<span class="px-2 py-1 ${getLabelColorClass(
+                                 label
+                               )} text-xs rounded">${label}</span>`
+                           )
+                           .join("")}
+                       </div>`
+                    : ""
+                }
               </div>
             </div>
-            <button
-              class="text-red-600 hover:text-red-800 transition-colors delete-button p-2"
-              title="Delete"
-              data-id="${contact.id}"
-              onclick="event.stopPropagation()"
-            >
-              <i data-feather="trash-2" class="w-4 h-4"></i>
-            </button>
-          </div>
-          
-          <!-- Contact Info -->
-          <div class="space-y-2 text-sm text-gray-600 ml-15">
-            ${
-              contact.phone
-                ? `
-              <div class="flex items-center gap-2">
-                <i data-feather="phone" class="w-4 h-4 text-gray-400"></i>
-                <span>${contact.phone}</span>
-              </div>
-            `
-                : ""
-            }
-            ${
-              contact.email
-                ? `
-              <div class="flex items-center gap-2">
-                <i data-feather="mail" class="w-4 h-4 text-gray-400"></i>
-                <span>${contact.email}</span>
-              </div>
-            `
-                : ""
-            }
-            ${
-              contact.birthdate
-                ? `
-              <div class="flex items-center gap-2">
-                <i data-feather="calendar" class="w-4 h-4 text-gray-400"></i>
-                <span>${formattedBirthdate(contact.birthdate)}</span>
-              </div>
-            `
-                : ""
-            }
-          </div>
-        </div>
+          </td>
+        </tr>
       `;
 
-      contactsMobileContainer.innerHTML += contactCard;
+      contactsMobileTableBody.innerHTML += contactRow;
     });
   }
 
@@ -334,31 +329,15 @@ function updateContactCount(
 
   const countNumber = element.querySelector(".contact-count-number");
   const countText = element.querySelector(".contact-count-text");
-  const icon = element.querySelector("i");
 
   if (countNumber) {
     countNumber.textContent = currentCount;
   }
 
   if (keyword) {
-    element.className =
-      "bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full flex items-center gap-2";
-    if (icon) icon.setAttribute("data-feather", "search");
     if (countText) countText.textContent = `of ${totalCount}`;
   } else if (labelFilter) {
-    element.className =
-      "bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full flex items-center gap-2";
-    if (icon) icon.setAttribute("data-feather", "tag");
     if (countText) countText.textContent = `of ${totalCount}`;
-  } else {
-    element.className =
-      "bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full flex items-center gap-2";
-    if (icon) icon.setAttribute("data-feather", "users");
-  }
-
-  // Refresh feather icons
-  if (icon) {
-    feather.replace();
   }
 }
 
@@ -373,7 +352,7 @@ function detailContactPage(id) {
 function addDeleteEventListeners() {
   document.querySelectorAll(".delete-button").forEach((button) => {
     button.addEventListener("click", (event) => {
-      event.stopPropagation();
+      event.preventDefault();
       const contactId = parseInt(event.currentTarget.getAttribute("data-id"));
       showDeleteConfirmationModal(contactId);
     });
