@@ -242,7 +242,7 @@ function renderContacts() {
       const initials = getInitials(contact.fullName);
 
       const contactRow = `
-        <tr class="border-t border-gray-200 hover:bg-gray-50 cursor-pointer" onclick="detailContactPage(${
+        <tr class="border-t border-gray-200 hover:bg-gray-200 cursor-pointer" onclick="detailContactPage(${
           contact.id
         })">
           <td class="px-4 py-3">
