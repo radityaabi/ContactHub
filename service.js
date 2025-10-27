@@ -455,12 +455,18 @@ function deleteContactById(dataContacts, id) {
 
 function showDeleteConfirmationModal(contactId) {
   const modal = document.getElementById("delete-confirm-modal");
+
+  if (!modal) {
+    console.error("Modal not found");
+    return;
+  }
+
   const confirmButton = document.getElementById("confirm-delete-button");
   const cancelButton = document.getElementById("cancel-delete-button");
   const backdrop = document.getElementById("modal-backdrop");
 
-  if (!confirmButton || !cancelButton || !modal) {
-    console.error("Modal elements not found");
+  if (!confirmButton || !cancelButton) {
+    console.error("Modal buttons not found");
     return;
   }
 
@@ -468,26 +474,24 @@ function showDeleteConfirmationModal(contactId) {
   modal.classList.remove("hidden");
   feather.replace();
 
-  // Remove existing event listeners and add new ones
-  const confirmHandler = () => {
-    handleDeleteContact(contactId);
-    hideDeleteModal();
-  };
+  // Remove existing event listeners by cloning
+  const newConfirmButton = confirmButton.cloneNode(true);
+  const newCancelButton = cancelButton.cloneNode(true);
 
-  const cancelHandler = () => {
-    hideDeleteModal();
-  };
-
-  // Remove old listeners and add new ones
-  confirmButton.replaceWith(confirmButton.cloneNode(true));
-  cancelButton.replaceWith(cancelButton.cloneNode(true));
+  confirmButton.replaceWith(newConfirmButton);
+  cancelButton.replaceWith(newCancelButton);
 
   // Get new references
-  const newConfirmButton = document.getElementById("confirm-delete-button");
-  const newCancelButton = document.getElementById("cancel-delete-button");
+  const currentConfirmButton = document.getElementById("confirm-delete-button");
+  const currentCancelButton = document.getElementById("cancel-delete-button");
 
-  newConfirmButton.addEventListener("click", confirmHandler);
-  newCancelButton.addEventListener("click", cancelHandler);
+  // Add event listeners
+  currentConfirmButton.addEventListener("click", () => {
+    handleDeleteContact(contactId);
+    hideDeleteModal();
+  });
+
+  currentCancelButton.addEventListener("click", hideDeleteModal);
 
   // Backdrop click handler
   if (backdrop) {
