@@ -142,8 +142,8 @@ class SearchComponent {
   render() {
     const isDesktop = this.type === "desktop";
     const inputClass = isDesktop
-      ? "pl-12 pr-12 py-3 bg-white rounded-lg border border-gray-300 w-full shadow-sm text-lg"
-      : "pl-10 pr-10 py-2 bg-white rounded-md border border-gray-300 w-full shadow-sm text-sm";
+      ? "pl-12 pr-12 py-3 bg-gray-200 rounded-lg w-full shadow-sm text-lg focus:bg-white focus:border-1 focus:border-gray-300 focus:outline-none transition-colors"
+      : "pl-10 pr-10 py-2 bg-gray-200 rounded-md w-full shadow-sm text-sm focus:bg-white focus:border-1 focus:border-gray-300 focus:outline-none transition-colors";
 
     const iconSize = isDesktop ? "w-5 h-5" : "w-4 h-4";
     const iconPosition = isDesktop ? "left-4" : "left-3";
@@ -156,7 +156,7 @@ class SearchComponent {
       <form id="${this.formId}" method="get" class="w-full relative">
         <i
           data-feather="search"
-          class="absolute ${iconPosition} top-1/2 transform -translate-y-1/2 text-gray-400 ${iconSize}"
+          class="absolute ${iconPosition} top-1/2 transform -translate-y-1/2 text-gray-500 ${iconSize}"
         ></i>
         <input
           type="text"
