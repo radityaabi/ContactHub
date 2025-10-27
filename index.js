@@ -213,7 +213,7 @@ function renderContacts() {
             ${initials}
           </div>
           <span>${contact.fullName}</span>
-        </td>
+        </td>onclick
         <td class="px-4 py-2">${contact.phone ?? "-"}</td>
         <td class="px-4 py-2">${contact.email ?? "-"}</td>
         <td class="px-4 py-2">${formattedBirthdate(contact.birthdate)}</td>
@@ -230,7 +230,7 @@ function renderContacts() {
             <i data-feather="trash-2"></i>
           </button>
         </td>
-      </tr>
+      </tr>onclick
     `;
 
     contactsTableBody.innerHTML += contactRow;
@@ -339,10 +339,6 @@ function updateContactCount(
   } else if (labelFilter) {
     countText.textContent = `of ${totalCount}`;
   }
-}
-
-function editContactPage(id) {
-  window.location.href = `/edit-contact/?id=${id}`;
 }
 
 function detailContactPage(id) {
