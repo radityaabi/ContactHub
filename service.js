@@ -483,14 +483,21 @@ function showDeleteConfirmationModal(contactId) {
   });
 
   // Close modal when clicking backdrop
-  backdrop.addEventListener("click", () => {
-    hideDeleteModal();
+  backdrop.addEventListener("click", (event) => {
+    if (event.target === backdrop) {
+      hideDeleteModal();
+    }
   });
+
+  document.addEventListener("keydown", handleEscapeKey);
 }
 
 function hideDeleteModal() {
   const modal = document.getElementById("delete-confirm-modal");
-  modal.classList.add("hidden");
+  if (modal) {
+    modal.classList.add("hidden");
+  }
+  document.removeEventListener("keydown", handleEscapeKey);
 }
 
 function handleDeleteContact(contactId) {
