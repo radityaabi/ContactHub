@@ -64,7 +64,7 @@ function renderContactById() {
           <i data-feather="phone" class="text-gray-400 flex-shrink-0 mr-3"></i>
           <span class="text-gray-900 mr-1">${contact.phone}</span>
           <button 
-            class="copy-btn p-1 text-gray-400 hover:text-blue-600" 
+            class="copy-button p-1 text-gray-400 hover:text-blue-600" 
             data-copy="${contact.phone}"
             title="Copy phone number"
           >
@@ -84,7 +84,7 @@ function renderContactById() {
             ${contact.email}
           </a>
           <button 
-            class="copy-btn p-1 text-gray-400 hover:text-blue-600" 
+            class="copy-button p-1 text-gray-400 hover:text-blue-600" 
             data-copy="${contact.email}"
             title="Copy email"
           >
@@ -102,7 +102,7 @@ function renderContactById() {
           <i data-feather="map-pin" class="text-gray-400 flex-shrink-0 mr-3 mt-1"></i>
           <span class="text-gray-900 break-words mr-1">${contact.address}</span>
           <button 
-            class="copy-btn p-1 text-gray-400 hover:text-blue-600 flex-shrink-0 mt-1" 
+            class="copy-button p-1 text-gray-400 hover:text-blue-600 flex-shrink-0 mt-1" 
             data-copy="${contact.address}"
             title="Copy address"
           >
@@ -166,7 +166,7 @@ function renderContactById() {
 }
 
 function addCopyEventListeners() {
-  document.querySelectorAll(".copy-btn").forEach((button) => {
+  document.querySelectorAll(".copy-button").forEach((button) => {
     button.addEventListener("click", function (event) {
       event.preventDefault();
       const textToCopy = this.getAttribute("data-copy");
