@@ -459,35 +459,44 @@ function showDeleteConfirmationModal(contactId) {
   const cancelButton = document.getElementById("cancel-delete-button");
   const backdrop = document.getElementById("modal-backdrop");
 
+  if (!confirmButton || !cancelButton || !modal) {
+    console.error("Modal elements not found");
+    return;
+  }
+
   // Show modal
   modal.classList.remove("hidden");
-
-  // Refresh feather icons
   feather.replace();
 
-  // Remove any existing event listeners
-  const newConfirmButton = confirmButton.cloneNode(true);
-  const newCancelButton = cancelButton.cloneNode(true);
-
-  confirmButton.parentNode.replaceChild(newConfirmButton, confirmButton);
-  cancelButton.parentNode.replaceChild(newCancelButton, cancelButton);
-
-  // Add event listeners to new buttons
-  newConfirmButton.addEventListener("click", () => {
+  // Remove existing event listeners and add new ones
+  const confirmHandler = () => {
     handleDeleteContact(contactId);
     hideDeleteModal();
-  });
+  };
 
-  newCancelButton.addEventListener("click", () => {
+  const cancelHandler = () => {
     hideDeleteModal();
-  });
+  };
 
-  // Close modal when clicking backdrop
-  backdrop.addEventListener("click", (event) => {
-    if (event.target === backdrop) {
-      hideDeleteModal();
-    }
-  });
+  // Remove old listeners and add new ones
+  confirmButton.replaceWith(confirmButton.cloneNode(true));
+  cancelButton.replaceWith(cancelButton.cloneNode(true));
+
+  // Get new references
+  const newConfirmButton = document.getElementById("confirm-delete-button");
+  const newCancelButton = document.getElementById("cancel-delete-button");
+
+  newConfirmButton.addEventListener("click", confirmHandler);
+  newCancelButton.addEventListener("click", cancelHandler);
+
+  // Backdrop click handler
+  if (backdrop) {
+    backdrop.addEventListener("click", (event) => {
+      if (event.target === backdrop) {
+        hideDeleteModal();
+      }
+    });
+  }
 
   document.addEventListener("keydown", handleEscapeKey);
 }
