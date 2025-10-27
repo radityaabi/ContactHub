@@ -213,7 +213,7 @@ function renderContacts() {
             ${initials}
           </div>
           <span>${contact.fullName}</span>
-        </td>onclick
+        </td>
         <td class="px-4 py-2">${contact.phone ?? "-"}</td>
         <td class="px-4 py-2">${contact.email ?? "-"}</td>
         <td class="px-4 py-2">${formattedBirthdate(contact.birthdate)}</td>
@@ -230,7 +230,7 @@ function renderContacts() {
             <i data-feather="trash-2"></i>
           </button>
         </td>
-      </tr>onclick
+      </tr>
     `;
 
     contactsTableBody.innerHTML += contactRow;
@@ -261,7 +261,6 @@ function renderContacts() {
                     class="text-red-600 hover:text-red-800 transition-colors delete-button p-2 ml-2 flex-shrink-0"
                     title="Delete"
                     data-id="${contact.id}"
-                    onclick="event.stopPropagation(); event.preventDefault();"
                   >
                     <i data-feather="trash-2" class="w-4 h-4"></i>
                   </button>
