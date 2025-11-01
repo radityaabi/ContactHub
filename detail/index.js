@@ -1,14 +1,13 @@
 function renderContactById() {
-  // Initialize search components
-  const desktopSearch = new SearchComponent(
-    "search-container-desktop",
-    "desktop"
-  );
-  const mobileSearch = new SearchComponent("search-container-mobile", "mobile");
-  desktopSearch.initialize();
-  mobileSearch.initialize();
+  // Initialize search component
+  const search = new SearchComponent("search-container");
+  search.initialize();
 
-  setupMobileMenu();
+  // Initialize mobile navigation
+  initializeMobileNavigation();
+
+  // Initialize label filters
+  initializeLabelFilters();
 
   const dataContacts = loadContactsFromStorage();
   const queryString = window.location.search;
@@ -31,158 +30,175 @@ function renderContactById() {
       ? contact.labels
           .map((label) => {
             const colorClass = getLabelColorClass(label);
-            return `<span class="px-2 py-1 ${colorClass} text-xs rounded">${label}</span>`;
+            return `<span class="px-2 py-1 sm:px-3 sm:py-1 ${colorClass} text-xs sm:text-sm font-medium rounded-full">${label}</span>`;
           })
           .join(" ")
-      : '<span class="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded">No labels</span>';
+      : '<span class="px-2 py-1 sm:px-3 sm:py-1 bg-gray-100 text-gray-600 text-xs sm:text-sm font-medium rounded-full">No labels</span>';
 
   const initials = getInitials(contact.fullName);
 
   const contactDetails = `
-    <div class="flex items-start gap-5 border-b border-gray-200 pb-5 mb-5">
-      <div class="w-16 h-16 ${
-        contact.color
-      } rounded-full flex items-center justify-center text-white text-2xl font-bold flex-shrink-0">
-        ${initials}
-      </div>
-      <div class="flex-1">
-        <h1 class="text-2xl font-bold break-words mb-2">${
-          contact.fullName || "Unknown"
-        }</h1>
-        <div class="flex flex-wrap gap-1">
-          ${labels}
+    <!-- Main Content Container -->
+    <div class="max-w-4xl mx-auto">
+      <div class="flex items-start gap-3 sm:gap-4 md:gap-6 mb-4 sm:mb-6 md:mb-8">
+        <!-- Avatar -->
+        <div class="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 ${
+          contact.color
+        } rounded-full flex items-center justify-center text-white text-lg sm:text-xl md:text-2xl font-bold flex-shrink-0">
+          ${initials}
+        </div>
+        
+        <div class="flex-1">
+          <h1 class="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-1 sm:mb-2">${
+            contact.fullName || "Unknown"
+          }</h1>
+          <div class="flex flex-wrap gap-1 sm:gap-2">
+            ${labels}
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Contact Info -->
-    <div class="space-y-4 mb-6">
-      ${
-        contact.phone
-          ? `
-        <div class="flex items-center group">
-          <i data-feather="phone" class="text-gray-400 flex-shrink-0 mr-3"></i>
-          <span class="text-gray-900 mr-1">${contact.phone}</span>
-          <button 
-            class="copy-button p-1 text-gray-400 hover:text-blue-600" 
-            data-copy="${contact.phone}"
-            title="Copy phone number"
-          >
-            <i data-feather="copy" class="w-4 h-4"></i>
-          </button>
-        </div>
-      `
-          : ""
-      }
-      
-      ${
-        contact.email
-          ? `
-        <div class="flex items-center group">
-          <i data-feather="mail" class="text-gray-400 flex-shrink-0 mr-3"></i>
-          <a href="mailto:${contact.email}" target="_blank" class="text-blue-600 hover:text-blue-700 break-all mr-1">
-            ${contact.email}
-          </a>
-          <button 
-            class="copy-button p-1 text-gray-400 hover:text-blue-600" 
-            data-copy="${contact.email}"
-            title="Copy email"
-          >
-            <i data-feather="copy" class="w-4 h-4"></i>
-          </button>
-        </div>
-      `
-          : ""
-      }
-      
-      ${
-        contact.address
-          ? `
-        <div class="flex group">
-          <i data-feather="map-pin" class="text-gray-400 flex-shrink-0 mr-3 mt-1"></i>
-          <span class="text-gray-900 break-words mr-1">${contact.address}</span>
-          <button 
-            class="copy-button p-1 text-gray-400 hover:text-blue-600 flex-shrink-0 mt-1" 
-            data-copy="${contact.address}"
-            title="Copy address"
-          >
-            <i data-feather="copy" class="w-4 h-4"></i>
-          </button>
-        </div>
-      `
-          : ""
-      }
-      
-      ${
-        contact.birthdate
-          ? `
-        <div class="flex items-center gap-3">
-          <i data-feather="calendar" class="text-gray-400 flex-shrink-0"></i>
-          <span class="text-gray-900">${formattedBirthdate(
-            contact.birthdate
-          )}</span>
-        </div>
-      `
-          : ""
-      }
-    </div>
+      <!-- Divider -->
+      <div class="border-t border-gray-200 my-4 sm:my-6 md:my-8"></div>
 
-    <div class="flex gap-3 pt-5 border-t border-gray-200">
-      <button
-        onclick="editContactPage(${contact.id})"
-        class="flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors flex-1 sm:flex-none group"
-        title="Edit Contact"
-      >
-        <i data-feather="edit" class="w-4 h-4"></i>
-        <span class="sm:inline hidden">Edit</span>
-        <span class="sm:hidden inline">Edit</span>
-      </button>
-      
-      <button
-        class="delete-button flex items-center justify-center gap-2 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors flex-1 sm:flex-none group"
-        title="Delete Contact"
-      >
-        <i data-feather="trash-2" class="w-4 h-4"></i>
-        <span class="sm:inline hidden">Delete</span>
-        <span class="sm:hidden inline">Delete</span>
-      </button>
-      
-      <a
-        href="/"
-        class="flex items-center justify-center gap-2 bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition-colors flex-1 sm:flex-none group text-center"
-        title="Back to Contacts"
-      >
-        <i data-feather="arrow-left" class="w-4 h-4"></i>
-        <span class="sm:inline hidden">Back</span>
-        <span class="sm:hidden inline">Back</span>
-      </a>
+      <!-- Contact Information -->
+      <div class="space-y-3 sm:space-y-4 md:space-y-6 mb-4 sm:mb-6 md:mb-8">
+        ${
+          contact.phone
+            ? `
+          <div class="flex items-center">
+            <i data-feather="phone" class="text-gray-400 w-4 h-4 sm:w-4 sm:h-4 md:w-5 md:h-5 flex-shrink-0 mr-2 sm:mr-3 md:mr-4"></i>
+            <span class="text-sm sm:text-base md:text-lg text-gray-900 font-medium mr-1 sm:mr-2">${contact.phone}</span>
+            <button 
+              class="copy-button p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors flex-shrink-0" 
+              data-copy="${contact.phone}"
+              title="Copy phone number"
+            >
+              <i data-feather="copy" class="w-3 h-3 sm:w-3 sm:h-3 md:w-4 md:h-4"></i>
+            </button>
+          </div>
+        `
+            : ""
+        }
+        
+        ${
+          contact.email
+            ? `
+          <div class="flex items-center">
+            <i data-feather="mail" class="text-gray-400 w-4 h-4 sm:w-4 sm:h-4 md:w-5 md:h-5 flex-shrink-0 mr-2 sm:mr-3 md:mr-4"></i>
+            <a href="mailto:${contact.email}" target="_blank" class="text-sm sm:text-base md:text-lg text-blue-600 hover:text-blue-700 font-medium break-all mr-1 sm:mr-2">
+              ${contact.email}
+            </a>
+            <button 
+              class="copy-button p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors flex-shrink-0" 
+              data-copy="${contact.email}"
+              title="Copy email"
+            >
+              <i data-feather="copy" class="w-3 h-3 sm:w-3 sm:h-3 md:w-4 md:h-4"></i>
+            </button>
+          </div>
+        `
+            : ""
+        }
+        
+        ${
+          contact.address
+            ? `
+          <div class="flex items-start">
+            <i data-feather="map-pin" class="text-gray-400 w-4 h-4 sm:w-4 sm:h-4 md:w-5 md:h-5 flex-shrink-0 mr-2 sm:mr-3 md:mr-4 mt-0.5"></i>
+            <span class="text-sm sm:text-base md:text-lg text-gray-900 leading-relaxed mr-1 sm:mr-2">${contact.address}</span>
+            <button 
+              class="copy-button p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors flex-shrink-0 mt-0.5" 
+              data-copy="${contact.address}"
+              title="Copy address"
+            >
+              <i data-feather="copy" class="w-3 h-3 sm:w-3 sm:h-3 md:w-4 md:h-4"></i>
+            </button>
+          </div>
+        `
+            : ""
+        }
+        
+        ${
+          contact.birthdate
+            ? `
+          <div class="flex items-center">
+            <i data-feather="calendar" class="text-gray-400 w-4 h-4 sm:w-4 sm:h-4 md:w-5 md:h-5 flex-shrink-0 mr-2 sm:mr-3 md:mr-4"></i>
+            <span class="text-sm sm:text-base md:text-lg text-gray-900 mr-1 sm:mr-2">${formattedBirthdate(
+              contact.birthdate
+            )}</span>
+            <button 
+              class="copy-button p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors flex-shrink-0" 
+              data-copy="${formattedBirthdate(contact.birthdate)}"
+              title="Copy birthdate"
+            >
+              <i data-feather="copy" class="w-3 h-3 sm:w-3 sm:h-3 md:w-4 md:h-4"></i>
+            </button>
+          </div>
+        `
+            : ""
+        }
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4 pt-4 sm:pt-6 md:pt-8 border-t border-gray-200">
+        <a
+          href="/"
+          class="flex items-center justify-center gap-1 sm:gap-2 bg-gray-200 text-gray-800 px-2 sm:px-3 md:px-4 py-2 sm:py-2 md:py-3 rounded-lg hover:bg-gray-300 transition-colors text-center font-medium text-xs sm:text-sm md:text-base"
+        >
+          <i data-feather="arrow-left" class="w-3 h-3 sm:w-3 sm:h-3 md:w-4 md:h-4"></i>
+          <span>Back</span>
+        </a>
+        
+        <button
+          onclick="editContactPage(${contact.id})"
+          class="flex items-center justify-center gap-1 sm:gap-2 bg-blue-600 text-white px-2 sm:px-3 md:px-4 py-2 sm:py-2 md:py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium text-xs sm:text-sm md:text-base"
+        >
+          <i data-feather="edit" class="w-3 h-3 sm:w-3 sm:h-3 md:w-4 md:h-4"></i>
+          <span>Edit</span>
+        </button>
+        
+        <button
+          class="delete-button flex items-center justify-center gap-1 sm:gap-2 bg-red-600 text-white px-2 sm:px-3 md:px-4 py-2 sm:py-2 md:py-3 rounded-lg hover:bg-red-700 transition-colors font-medium text-xs sm:text-sm md:text-base"
+          data-id="${contact.id}"
+        >
+          <i data-feather="trash-2" class="w-3 h-3 sm:w-3 sm:h-3 md:w-4 md:h-4"></i>
+          <span>Delete</span>
+        </button>
+      </div>
     </div>
   `;
 
   container.innerHTML = contactDetails;
   feather.replace();
+
+  // Setup event listeners
   addDeleteEventListeners(contact);
   addCopyEventListeners();
+
+  // Update label filters UI based on URL parameters
+  const labelsParam = new URLSearchParams(window.location.search).get("labels");
+  updateLabelFiltersUI(labelsParam);
+  updateActiveFiltersDisplay(labelsParam);
 }
 
 function addCopyEventListeners() {
   document.querySelectorAll(".copy-button").forEach((button) => {
     button.addEventListener("click", function (event) {
       event.preventDefault();
+      event.stopPropagation();
       const textToCopy = this.getAttribute("data-copy");
 
-      // Copy to clipboard
       navigator.clipboard
         .writeText(textToCopy)
         .then(() => {
           const originalIcon = this.innerHTML;
           this.innerHTML =
-            '<i data-feather="check" class="w-4 h-4 text-green-500"></i>';
+            '<i data-feather="check" class="w-3 h-3 sm:w-3 sm:h-3 md:w-4 md:h-4 text-green-500"></i>';
           feather.replace();
 
           showNotification("Copied to clipboard!", "success");
 
-          // Revert back to copy icon
           setTimeout(() => {
             this.innerHTML = originalIcon;
             feather.replace();
@@ -202,6 +218,7 @@ function addDeleteEventListeners(contact) {
 
   deleteButton.addEventListener("click", function (event) {
     event.preventDefault();
+    event.stopPropagation();
     showDeleteConfirmationModal(contact.id);
   });
 }
@@ -210,5 +227,22 @@ function editContactPage(id) {
   window.location.href = `/edit-contact/?id=${id}`;
 }
 
+// Handle delete confirmation
+function handleDeleteContact(contactId) {
+  const contacts = loadContactsFromStorage();
+
+  try {
+    const updatedContacts = deleteContactById(contacts, contactId);
+    showNotification("Contact deleted successfully", "success");
+    setTimeout(() => {
+      goToDashboardPage();
+    }, 300);
+  } catch (error) {
+    showNotification("Failed to delete contact", "error");
+  }
+}
+
 // Initial Render
-document.addEventListener("DOMContentLoaded", renderContactById);
+document.addEventListener("DOMContentLoaded", function () {
+  renderContactById();
+});

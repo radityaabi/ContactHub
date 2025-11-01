@@ -1,8 +1,7 @@
 class SearchPopup {
-  constructor(searchInputId, resultsContainerId, type = "desktop") {
+  constructor(searchInputId, resultsContainerId) {
     this.searchInputId = searchInputId;
     this.resultsContainerId = resultsContainerId;
-    this.type = type;
     this.searchTimeout = null;
     this.debounceDelay = 200;
     this.isOpen = false;
@@ -12,7 +11,15 @@ class SearchPopup {
     const searchInput = document.getElementById(this.searchInputId);
     const resultsContainer = document.getElementById(this.resultsContainerId);
 
-    if (!searchInput || !resultsContainer) return;
+    if (!searchInput) {
+      console.error("Search input not found:", this.searchInputId);
+      return;
+    }
+
+    if (!resultsContainer) {
+      console.error("Results container not found:", this.resultsContainerId);
+      return;
+    }
 
     searchInput.addEventListener("input", (event) => {
       this.handleSearchInput(event.target.value);
@@ -22,6 +29,30 @@ class SearchPopup {
       const currentValue = searchInput.value.trim();
       if (currentValue) {
         this.showResults(currentValue);
+      } else {
+        // Show recent contacts or empty state when focused with no input
+        this.showResults("");
+      }
+    });
+
+    searchInput.addEventListener("blur", (event) => {
+      setTimeout(() => {
+        if (!resultsContainer.contains(document.activeElement)) {
+          this.hideResults();
+        }
+      }, 150);
+    });
+
+    // Reposition on window resize and scroll
+    window.addEventListener("resize", () => {
+      if (this.isOpen) {
+        this.positionDropdown();
+      }
+    });
+
+    window.addEventListener("scroll", () => {
+      if (this.isOpen) {
+        this.positionDropdown();
       }
     });
 
@@ -37,12 +68,12 @@ class SearchPopup {
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") {
         this.hideResults();
+        searchInput.blur();
       }
     });
   }
 
   handleSearchInput(keyword) {
-    // Clear previous timeout
     if (this.searchTimeout) {
       clearTimeout(this.searchTimeout);
     }
@@ -58,14 +89,34 @@ class SearchPopup {
 
   showResults(keyword) {
     const contacts = loadContactsFromStorage();
-    const filteredContacts = this.searchContacts(contacts, keyword);
+    const filteredContacts = keyword
+      ? this.searchContacts(contacts, keyword)
+      : [];
     this.renderResults(filteredContacts, keyword);
+    this.positionDropdown();
     this.isOpen = true;
+  }
+
+  positionDropdown() {
+    const searchInput = document.getElementById(this.searchInputId);
+    const resultsContainer = document.getElementById(this.resultsContainerId);
+
+    if (!searchInput || !resultsContainer) return;
+
+    const inputRect = searchInput.getBoundingClientRect();
+
+    // Position dropdown below search input with fixed positioning
+    resultsContainer.style.width = `${inputRect.width}px`;
+    resultsContainer.style.left = `${inputRect.left}px`;
+    resultsContainer.style.top = `${inputRect.bottom}px`;
+    resultsContainer.style.zIndex = "9999";
   }
 
   hideResults() {
     const resultsContainer = document.getElementById(this.resultsContainerId);
-    resultsContainer.classList.add("hidden");
+    if (resultsContainer) {
+      resultsContainer.classList.add("hidden");
+    }
     this.isOpen = false;
   }
 
@@ -77,30 +128,41 @@ class SearchPopup {
         const searchFields = [
           contact.fullName?.toLowerCase(),
           contact.email?.toLowerCase(),
+          contact.phone?.toLowerCase(),
         ].filter(Boolean);
 
         return searchFields.some((field) => field.includes(normalizedKeyword));
       })
-      .slice(0, 8); // Limit to 8 results
+      .slice(0, 8);
   }
 
   renderResults(contacts, keyword) {
     const resultsContainer = document.getElementById(this.resultsContainerId);
+    if (!resultsContainer) return;
 
     if (contacts.length === 0) {
-      resultsContainer.innerHTML = `
-        <div class="p-4 text-center text-gray-500">
-          <i data-feather="search" class="w-8 h-8 mx-auto mb-2 text-gray-300"></i>
-          <p>No contacts found for "${keyword}"</p>
-        </div>
-      `;
+      if (keyword) {
+        resultsContainer.innerHTML = `
+          <div class="p-4 text-center text-gray-500 bg-white">
+            <i data-feather="search" class="w-8 h-8 mx-auto mb-2 text-gray-300"></i>
+            <p class="text-sm">No contacts found for "${keyword}"</p>
+          </div>
+        `;
+      } else {
+        resultsContainer.innerHTML = `
+          <div class="p-4 text-center text-gray-500 bg-white">
+            <i data-feather="search" class="w-8 h-8 mx-auto mb-2 text-gray-300"></i>
+            <p class="text-sm">Type to search contacts</p>
+          </div>
+        `;
+      }
     } else {
       resultsContainer.innerHTML = contacts
         .map(
           (contact) => `
         <div 
-          class="p-3 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors duration-150"
-          onclick="handleSearchResultClick(${contact.id})"
+          class="p-3 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors duration-150 bg-white"
+          onmousedown="handleSearchResultClick(${contact.id})"
         >
           <div class="flex items-center gap-3">
             <div class="w-8 h-8 ${
@@ -117,6 +179,11 @@ class SearchPopup {
                   ? `<div class="text-sm text-gray-500 truncate">${contact.email}</div>`
                   : ""
               }
+              ${
+                contact.phone
+                  ? `<div class="text-sm text-gray-500 truncate">${contact.phone}</div>`
+                  : ""
+              }
             </div>
           </div>
         </div>
@@ -131,53 +198,53 @@ class SearchPopup {
 }
 
 class SearchComponent {
-  constructor(containerId, type = "desktop") {
+  constructor(containerId) {
     this.containerId = containerId;
-    this.type = type;
-    this.searchInputId = `search-input-${type}`;
-    this.clearButtonId = `clear-search-${type}`;
-    this.formId = `search-contact-form-${type}`;
+    this.searchInputId = `search-input`;
+    this.clearButtonId = `clear-search`;
+    this.formId = `search-contact-form`;
+    this.resultsContainerId = `search-results`;
   }
 
   render() {
-    const isDesktop = this.type === "desktop";
-    const inputClass = isDesktop
-      ? "pl-12 pr-12 py-3 bg-gray-200 rounded-lg w-full shadow-sm text-lg focus:bg-white focus:border-1 focus:border-gray-300 focus:outline-none transition-colors"
-      : "pl-10 pr-10 py-2 bg-gray-200 rounded-md w-full shadow-sm text-sm focus:bg-white focus:border-1 focus:border-gray-300 focus:outline-none transition-colors";
-
-    const iconSize = isDesktop ? "w-5 h-5" : "w-4 h-4";
-    const iconPosition = isDesktop ? "left-4" : "left-3";
-    const clearButtonPosition = isDesktop ? "right-4" : "right-3";
+    const inputClass =
+      "pl-12 pr-12 py-3 lg:py-2 bg-gray-200 rounded-lg lg:rounded-md w-full shadow-sm text-lg lg:text-sm focus:bg-white focus:outline-2 focus:outline-gray-300 transition-all";
 
     const currentSearchValue = this.getCurrentSearchValue();
     const showClearButton = this.shouldShowClearButton();
 
     return `
-      <form id="${this.formId}" method="get" class="w-full relative">
-        <i
-          data-feather="search"
-          class="absolute ${iconPosition} top-1/2 transform -translate-y-1/2 text-gray-500 ${iconSize}"
-        ></i>
-        <input
-          type="text"
-          name="q"
-          placeholder="Search contact..."
-          class="${inputClass}"
-          id="${this.searchInputId}"
-          value="${currentSearchValue}"
-          autocomplete="off"
-        />
-        <!-- Clear Button -->
-        <button
-          type="button"
-          id="${this.clearButtonId}"
-          class="absolute ${clearButtonPosition} top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors ${
-      showClearButton ? "" : "hidden"
-    }"
-        >
-          <i data-feather="x" class="${iconSize}"></i>
-        </button>
-      </form>
+      <div class="relative w-full">
+        <form id="${this.formId}" method="get" class="w-full relative">
+          <i
+            data-feather="search"
+            class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 w-5 h-5 lg:w-4 lg:h-4"
+          ></i>
+          <input
+            type="text"
+            name="q"
+            placeholder="Search contact..."
+            class="${inputClass}"
+            id="${this.searchInputId}"
+            value="${currentSearchValue}"
+            autocomplete="off"
+          />
+          <!-- Clear Button -->
+          <button
+            type="button"
+            id="${this.clearButtonId}"
+            class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors ${
+              showClearButton ? "" : "hidden"
+            }"
+          >
+            <i data-feather="x" class="w-5 h-5 lg:w-4 lg:h-4"></i>
+          </button>
+        </form>
+        <div
+          id="${this.resultsContainerId}"
+          class="fixed bg-white border border-gray-300 rounded-lg shadow-xl z-50 max-h-80 overflow-y-auto hidden"
+        ></div>
+      </div>
     `;
   }
 
@@ -192,13 +259,21 @@ class SearchComponent {
 
   initialize() {
     const container = document.getElementById(this.containerId);
-    if (!container) return;
+    if (!container) {
+      console.error("Search container not found:", this.containerId);
+      return;
+    }
 
     container.innerHTML = this.render();
     this.setupEventListeners();
     feather.replace();
 
-    initializeSearchPopup(this.type);
+    // Initialize search popup
+    const searchPopup = new SearchPopup(
+      this.searchInputId,
+      this.resultsContainerId
+    );
+    searchPopup.initialize();
   }
 
   setupEventListeners() {
@@ -206,7 +281,10 @@ class SearchComponent {
     const clearButton = document.getElementById(this.clearButtonId);
     const searchForm = document.getElementById(this.formId);
 
-    if (!searchInput || !clearButton || !searchForm) return;
+    if (!searchInput || !clearButton || !searchForm) {
+      console.error("Search elements not found");
+      return;
+    }
 
     // Form submission
     searchForm.addEventListener("submit", (event) => {
@@ -239,13 +317,15 @@ class SearchComponent {
     this.toggleClearButton(false);
 
     // Hide search results popup
-    const resultsContainerId =
-      this.type === "desktop"
-        ? "search-results-desktop"
-        : "search-results-mobile";
-    const resultsContainer = document.getElementById(resultsContainerId);
+    const resultsContainer = document.getElementById(this.resultsContainerId);
     if (resultsContainer) {
       resultsContainer.classList.add("hidden");
+    }
+
+    // Clear URL parameter if we're on search results page
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has("q")) {
+      window.location.href = "/";
     }
   }
 
@@ -263,17 +343,6 @@ class SearchComponent {
 
 function handleSearchResultClick(contactId) {
   window.location.href = `/detail/?id=${contactId}`;
-}
-
-function initializeSearchPopup(type = "desktop") {
-  const searchInputId =
-    type === "desktop" ? "search-input-desktop" : "search-input-mobile";
-  const resultsContainerId =
-    type === "desktop" ? "search-results-desktop" : "search-results-mobile";
-
-  const searchPopup = new SearchPopup(searchInputId, resultsContainerId, type);
-  searchPopup.initialize();
-  return searchPopup;
 }
 
 function goToDashboardPage() {
@@ -360,8 +429,10 @@ function showNotification(message, type = "info") {
   notificationContainer.appendChild(notification);
 
   setTimeout(() => {
-    notificationContainer.removeChild(notification);
-  }, 500);
+    if (notificationContainer.contains(notification)) {
+      notificationContainer.removeChild(notification);
+    }
+  }, 300);
 }
 
 function getContactDetailsById(dataContacts, id) {
@@ -376,27 +447,148 @@ function searchContacts(dataContacts, keyword) {
     const searchFields = [
       contact.fullName?.toLowerCase(),
       contact.email?.toLowerCase(),
+      contact.phone?.toLowerCase(),
     ].filter(Boolean);
 
     return searchFields.some((field) => field.includes(normalizedKeyword));
   });
 }
 
-function filterContactsByLabel(contacts, label) {
-  const filteredContactsByLabel = contacts.filter((contact) => {
-    return (
-      contact.labels &&
-      contact.labels.some(
-        (currentLabel) => currentLabel.toLowerCase() === label.toLowerCase()
-      )
-    );
+function initializeLabelFilters() {
+  const applyButton = document.getElementById("apply-filters");
+  const clearButton = document.getElementById("clear-filters");
+  const checkboxes = document.querySelectorAll('input[name="label"]');
+
+  // Update apply button state
+  checkboxes.forEach((checkbox) => {
+    checkbox.addEventListener("change", () => {
+      const anyChecked = Array.from(checkboxes).some(
+        (checkbox) => checkbox.checked
+      );
+      applyButton.disabled = !anyChecked;
+    });
   });
 
-  return filteredContactsByLabel;
+  // Apply filters
+  applyButton.addEventListener("click", applyLabelFilters);
+
+  // Clear filters
+  clearButton.addEventListener("click", clearLabelFilters);
+}
+
+function applyLabelFilters() {
+  const checkboxes = document.querySelectorAll('input[name="label"]:checked');
+  const selectedLabels = Array.from(checkboxes).map(
+    (checkbox) => checkbox.value
+  );
+
+  if (selectedLabels.length === 0) {
+    return;
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const searchQuery = params.get("q");
+
+  // Format: ?labels=work,family
+  const labelsString = selectedLabels.join(",");
+  const newUrl = searchQuery
+    ? `/?q=${searchQuery}&labels=${labelsString}`
+    : `/?labels=${labelsString}`;
+
+  window.location.href = newUrl;
+}
+
+function clearLabelFilters() {
+  const params = new URLSearchParams(window.location.search);
+  const searchQuery = params.get("q");
+
+  const newUrl = searchQuery ? `/?q=${searchQuery}` : "/";
+  window.location.href = newUrl;
+}
+
+function updateLabelFiltersUI(labelsParam) {
+  const checkboxes = document.querySelectorAll('input[name="label"]');
+
+  // Reset all checkboxes
+  checkboxes.forEach((checkbox) => {
+    checkbox.checked = false;
+  });
+
+  // Check the boxes based on URL parameter
+  if (labelsParam) {
+    const selectedLabels = labelsParam.split(",");
+    checkboxes.forEach((checkbox) => {
+      if (selectedLabels.includes(checkbox.value)) {
+        checkbox.checked = true;
+      }
+    });
+  }
+
+  // Update apply button state
+  const applyButton = document.getElementById("apply-filters");
+  const anyChecked = Array.from(checkboxes).some(
+    (checkbox) => checkbox.checked
+  );
+  applyButton.disabled = !anyChecked;
+}
+
+function updateActiveFiltersDisplay(labelsParam) {
+  const activeFiltersSection = document.getElementById(
+    "active-filters-section"
+  );
+  const currentActiveFilters = document.getElementById(
+    "current-active-filters"
+  );
+
+  if (!labelsParam) {
+    activeFiltersSection.classList.add("hidden");
+    currentActiveFilters.classList.add("hidden");
+    return;
+  }
+
+  const selectedLabels = labelsParam.split(",");
+
+  // Update desktop active filters
+  currentActiveFilters.innerHTML = `
+    <span class="text-sm text-gray-600 font-medium">Active Filters:</span>
+    ${selectedLabels
+      .map(
+        (label) => `
+      <span class="inline-flex items-center gap-1 bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+        <i data-feather="tag" class="w-3 h-3"></i>
+        ${label}
+      </span>
+    `
+      )
+      .join("")}
+    <button 
+      onclick="clearLabelFilters()" 
+      class="text-sm text-gray-600 hover:text-gray-800 underline flex items-center gap-1"
+    >
+      <i data-feather="x" class="w-3 h-3"></i>
+      Clear all
+    </button>
+  `;
+  currentActiveFilters.classList.remove("hidden");
+
+  feather.replace();
+}
+
+function filterContactsByMultipleLabels(contacts, labels) {
+  return contacts.filter((contact) => {
+    return labels.some(
+      (label) =>
+        contact.labels &&
+        contact.labels.some(
+          (contactLabel) => contactLabel.toLowerCase() === label.toLowerCase()
+        )
+    );
+  });
 }
 
 function addContact(dataContacts, newContactData) {
-  const lastId = dataContacts[dataContacts.length - 1].id ?? 0;
+  const lastId =
+    dataContacts.length > 0 ? dataContacts[dataContacts.length - 1].id : 0;
   const newId = lastId + 1;
 
   const newContact = {
@@ -407,7 +599,9 @@ function addContact(dataContacts, newContactData) {
     birthdate: newContactData.birthdate ?? null,
     address: newContactData.address ?? null,
     labels: Array.isArray(newContactData.labels) ? newContactData.labels : [],
-    color: newContactData.color,
+    color:
+      newContactData.color ||
+      getColorForInitial(getInitials(newContactData.fullName)),
   };
 
   if (!newContact.phone && !newContact.email) {
@@ -447,6 +641,7 @@ function deleteContactById(dataContacts, id) {
     const updatedContacts = dataContacts.filter((contact) => contact.id !== id);
     console.log("Contact deleted with id:", id);
     saveContactsToStorage(updatedContacts);
+    return updatedContacts;
   } catch (error) {
     console.error("Failed to delete contact:", error);
     return dataContacts;
@@ -517,13 +712,13 @@ function handleDeleteContact(contactId) {
   const contacts = loadContactsFromStorage();
 
   try {
-    deleteContactById(contacts, contactId);
+    const updatedContacts = deleteContactById(contacts, contactId);
     showNotification("Contact deleted successfully", "success");
     setTimeout(() => {
-      goToDashboardPage();
+      renderContacts(); // Re-render the contacts list
     }, 300);
   } catch (error) {
-    showNotification(error.message, "error");
+    showNotification("Failed to delete contact", "error");
   }
 }
 
@@ -556,6 +751,7 @@ function editContactById(dataContacts, id, updatedFields) {
   }, 300);
 }
 
+// Simplified mobile navigation - pure Tailwind approach
 function initializeMobileNavigation() {
   const mobileMenuButton = document.getElementById("mobile-menu-button");
   const closeSidebarButton = document.getElementById("close-sidebar");
@@ -584,57 +780,7 @@ function initializeMobileNavigation() {
 
   overlay.addEventListener("click", closeSidebar);
 
-  window.addEventListener("resize", () => {
-    if (window.innerWidth >= 1024) {
-      closeSidebar();
-    }
-  });
-}
-
-function setupMobileMenu() {
-  const mobileMenuButton = document.getElementById("mobile-menu-button");
-  const closeSidebarButton = document.getElementById("close-sidebar");
-  const sidebar = document.getElementById("sidebar");
-  const overlay = document.getElementById("sidebar-overlay");
-
-  function openSidebar() {
-    sidebar.classList.remove("-translate-x-full");
-    overlay.classList.remove("hidden");
-    document.body.style.overflow = "hidden";
-  }
-
-  function closeSidebar() {
-    sidebar.classList.add("-translate-x-full");
-    overlay.classList.add("hidden");
-    document.body.style.overflow = "";
-  }
-
-  if (mobileMenuButton) {
-    mobileMenuButton.addEventListener("click", openSidebar);
-  }
-
-  if (closeSidebarButton) {
-    closeSidebarButton.addEventListener("click", closeSidebar);
-  }
-
-  if (overlay) {
-    overlay.addEventListener("click", closeSidebar);
-  }
-
-  // Close sidebar when clicking on nav links (mobile)
-  const sidebarLinks = sidebar.querySelectorAll("a");
-  sidebarLinks.forEach((link) => {
-    link.addEventListener("click", closeSidebar);
-  });
-
-  // Close sidebar on escape key
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      closeSidebar();
-    }
-  });
-
-  // Close sidebar when window is resized to desktop
+  // Auto-close on resize
   window.addEventListener("resize", () => {
     if (window.innerWidth >= 1024) {
       closeSidebar();

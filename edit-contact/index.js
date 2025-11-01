@@ -5,32 +5,36 @@ const params = new URLSearchParams(queryString);
 const id = Number(params.get("id"));
 
 function initializeEditContactPage() {
-  // Initialize search components
-  const desktopSearch = new SearchComponent(
-    "search-container-desktop",
-    "desktop"
-  );
-  const mobileSearch = new SearchComponent("search-container-mobile", "mobile");
+  // Initialize search component
+  const search = new SearchComponent("search-container");
+  search.initialize();
 
-  desktopSearch.initialize();
-  mobileSearch.initialize();
+  // Initialize mobile navigation
+  initializeMobileNavigation();
 
-  // Setup mobile menu
-  setupMobileMenu();
+  // Initialize label filters
+  initializeLabelFilters();
 
   // Setup form event listeners
   setupFormEventListeners();
 
   // Render contact data
   renderEditContactById(id);
+
+  // Update label filters UI based on URL parameters
+  const labelsParam = new URLSearchParams(window.location.search).get("labels");
+  updateLabelFiltersUI(labelsParam);
+  updateActiveFiltersDisplay(labelsParam);
 }
 
 function setupFormEventListeners() {
   // Form submit event
-  editContactFormElement.addEventListener("submit", function (event) {
-    event.preventDefault();
-    editContactById(dataContacts, id, getFormData());
-  });
+  if (editContactFormElement) {
+    editContactFormElement.addEventListener("submit", function (event) {
+      event.preventDefault();
+      editContactById(dataContacts, id, getFormData());
+    });
+  }
 
   // Cancel button event
   const cancelButton = document.querySelector(".cancel-button");
@@ -48,7 +52,7 @@ function renderEditContactById(id) {
     showNotification("Contact not found", "error");
     setTimeout(() => {
       goToDashboardPage();
-    }, 300);
+    }, 2000);
     return;
   }
 
@@ -59,9 +63,9 @@ function renderEditContactById(id) {
   document.getElementById("address").value = contact.address || "";
 
   if (contact.birthdate) {
-    document.getElementById("birthdate").valueAsDate = new Date(
-      contact.birthdate
-    );
+    const birthdate = new Date(contact.birthdate);
+    const formattedDate = birthdate.toISOString().split("T")[0];
+    document.getElementById("birthdate").value = formattedDate;
   }
 
   // Set labels

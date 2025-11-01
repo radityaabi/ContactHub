@@ -3,29 +3,33 @@ const addContactFormElement = document.getElementById("add-contact-form");
 let dataContacts = loadContactsFromStorage();
 
 function initializeAddContactPage() {
-  // Initialize search components
-  const desktopSearch = new SearchComponent(
-    "search-container-desktop",
-    "desktop"
-  );
-  const mobileSearch = new SearchComponent("search-container-mobile", "mobile");
+  // Initialize search component
+  const search = new SearchComponent("search-container");
+  search.initialize();
 
-  desktopSearch.initialize();
-  mobileSearch.initialize();
+  // Initialize mobile navigation
+  initializeMobileNavigation();
 
-  // Setup mobile menu
-  setupMobileMenu();
+  // Initialize label filters
+  initializeLabelFilters();
 
   // Setup form event listeners
   setupFormEventListeners();
+
+  // Update label filters UI based on URL parameters
+  const labelsParam = new URLSearchParams(window.location.search).get("labels");
+  updateLabelFiltersUI(labelsParam);
+  updateActiveFiltersDisplay(labelsParam);
 }
 
 function setupFormEventListeners() {
   // Form submit event
-  addContactFormElement.addEventListener("submit", function (event) {
-    event.preventDefault();
-    addContact(dataContacts, getFormData());
-  });
+  if (addContactFormElement) {
+    addContactFormElement.addEventListener("submit", function (event) {
+      event.preventDefault();
+      addContact(dataContacts, getFormData());
+    });
+  }
 
   // Cancel button event
   const cancelButton = document.querySelector(".cancel-button");
