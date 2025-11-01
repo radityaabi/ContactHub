@@ -649,55 +649,28 @@ function deleteContactById(dataContacts, id) {
 }
 
 function showDeleteConfirmationModal(contactId) {
+  currentDeleteId = contactId;
   const modal = document.getElementById("delete-confirm-modal");
-
-  if (!modal) {
-    console.error("Modal not found");
-    return;
-  }
-
-  const confirmButton = document.getElementById("confirm-delete-button");
-  const cancelButton = document.getElementById("cancel-delete-button");
   const backdrop = document.getElementById("modal-backdrop");
 
-  if (!confirmButton || !cancelButton) {
-    console.error("Modal buttons not found");
-    return;
-  }
+  if (!modal) return;
 
-  // Show modal
   modal.classList.remove("hidden");
   feather.replace();
 
-  // Remove existing event listeners by cloning
-  const newConfirmButton = confirmButton.cloneNode(true);
-  const newCancelButton = cancelButton.cloneNode(true);
-
-  confirmButton.replaceWith(newConfirmButton);
-  cancelButton.replaceWith(newCancelButton);
-
-  // Get new references
-  const currentConfirmButton = document.getElementById("confirm-delete-button");
-  const currentCancelButton = document.getElementById("cancel-delete-button");
-
-  // Add event listeners
-  currentConfirmButton.addEventListener("click", () => {
-    handleDeleteContact(contactId);
-    hideDeleteModal();
-  });
-
-  currentCancelButton.addEventListener("click", hideDeleteModal);
-
-  // Backdrop click handler
+  // Setup backdrop click
   if (backdrop) {
-    backdrop.addEventListener("click", (event) => {
-      if (event.target === backdrop) {
-        hideDeleteModal();
-      }
-    });
+    backdrop.onclick = hideDeleteModal;
   }
 
   document.addEventListener("keydown", handleEscapeKey);
+}
+
+function handleConfirmDelete() {
+  if (currentDeleteId !== null) {
+    handleDeleteContact(currentDeleteId);
+    hideDeleteModal();
+  }
 }
 
 function hideDeleteModal() {
@@ -705,7 +678,14 @@ function hideDeleteModal() {
   if (modal) {
     modal.classList.add("hidden");
   }
+  currentDeleteId = null;
   document.removeEventListener("keydown", handleEscapeKey);
+}
+
+function handleEscapeKey(event) {
+  if (event.key === "Escape") {
+    hideDeleteModal();
+  }
 }
 
 function handleDeleteContact(contactId) {
@@ -713,18 +693,13 @@ function handleDeleteContact(contactId) {
 
   try {
     const updatedContacts = deleteContactById(contacts, contactId);
+    saveContactsToStorage(updatedContacts);
     showNotification("Contact deleted successfully", "success");
     setTimeout(() => {
-      renderContacts(); // Re-render the contacts list
+      goToDashboardPage();
     }, 300);
   } catch (error) {
     showNotification("Failed to delete contact", "error");
-  }
-}
-
-function handleEscapeKey(event) {
-  if (event.key === "Escape") {
-    hideDeleteModal();
   }
 }
 
@@ -751,7 +726,6 @@ function editContactById(dataContacts, id, updatedFields) {
   }, 300);
 }
 
-// Simplified mobile navigation - pure Tailwind approach
 function initializeMobileNavigation() {
   const mobileMenuButton = document.getElementById("mobile-menu-button");
   const closeSidebarButton = document.getElementById("close-sidebar");

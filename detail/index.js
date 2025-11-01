@@ -1,3 +1,6 @@
+// Global variable to store the ID of the contact to be deleted
+let currentDeleteId = null;
+
 function renderContactById() {
   // Initialize search component
   const search = new SearchComponent("search-container");
@@ -159,8 +162,8 @@ function renderContactById() {
         </button>
         
         <button
-          class="delete-button flex items-center justify-center gap-1 sm:gap-2 bg-red-600 text-white px-2 sm:px-3 md:px-4 py-2 sm:py-2 md:py-3 rounded-lg hover:bg-red-700 transition-colors font-medium text-xs sm:text-sm md:text-base"
-          data-id="${contact.id}"
+          onclick="showDeleteConfirmationModal(${contact.id})"
+          class="flex items-center justify-center gap-1 sm:gap-2 bg-red-600 text-white px-2 sm:px-3 md:px-4 py-2 sm:py-2 md:py-3 rounded-lg hover:bg-red-700 transition-colors font-medium text-xs sm:text-sm md:text-base focus:outline-none focus:ring-0"
         >
           <i data-feather="trash-2" class="w-3 h-3 sm:w-3 sm:h-3 md:w-4 md:h-4"></i>
           <span>Delete</span>
@@ -172,8 +175,6 @@ function renderContactById() {
   container.innerHTML = contactDetails;
   feather.replace();
 
-  // Setup event listeners
-  addDeleteEventListeners(contact);
   addCopyEventListeners();
 
   // Update label filters UI based on URL parameters
@@ -212,34 +213,27 @@ function addCopyEventListeners() {
   });
 }
 
-function addDeleteEventListeners(contact) {
-  const deleteButton = document.querySelector(".delete-button");
-  if (!deleteButton) return;
-
-  deleteButton.addEventListener("click", function (event) {
-    event.preventDefault();
-    event.stopPropagation();
-    showDeleteConfirmationModal(contact.id);
-  });
-}
-
 function editContactPage(id) {
   window.location.href = `/edit-contact/?id=${id}`;
 }
 
-// Handle delete confirmation
-function handleDeleteContact(contactId) {
-  const contacts = loadContactsFromStorage();
+// Show delete confirmation modal
+function showDeleteConfirmationModal(contactId) {
+  currentDeleteId = contactId;
+  const modal = document.getElementById("delete-confirm-modal");
+  const backdrop = document.getElementById("modal-backdrop");
 
-  try {
-    const updatedContacts = deleteContactById(contacts, contactId);
-    showNotification("Contact deleted successfully", "success");
-    setTimeout(() => {
-      goToDashboardPage();
-    }, 300);
-  } catch (error) {
-    showNotification("Failed to delete contact", "error");
+  if (!modal) return;
+
+  modal.classList.remove("hidden");
+  feather.replace();
+
+  // Setup backdrop click
+  if (backdrop) {
+    backdrop.onclick = hideDeleteModal;
   }
+
+  document.addEventListener("keydown", handleEscapeKey);
 }
 
 // Initial Render

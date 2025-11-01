@@ -101,6 +101,9 @@ const initialContacts = [
   },
 ];
 
+// Global variable to store the ID of the contact to be deleted
+let currentDeleteId = null;
+
 function setInitialContacts() {
   const contacts = loadContactsFromStorage();
 
@@ -288,9 +291,8 @@ function renderContacts() {
       </td>
       <td class="px-4 py-4 text-center hidden lg:table-cell">
         <button
-          class="text-red-600 hover:text-red-800 transition-colors delete-button p-2 rounded-lg hover:bg-red-50"
+          class="text-red-600 hover:text-red-800 transition-colors delete-button p-2 rounded-lg hover:bg-red-50 focus:outline-none focus:ring-0"
           title="Delete"
-          data-id="${contact.id}"
           onclick="event.stopPropagation(); showDeleteConfirmationModal(${
             contact.id
           })"
