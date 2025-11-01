@@ -1,3 +1,7 @@
+// ====================================
+// SEARCH POPUP COMPONENT
+// ====================================
+
 class SearchPopup {
   constructor(searchInputId, resultsContainerId) {
     this.searchInputId = searchInputId;
@@ -197,6 +201,10 @@ class SearchPopup {
   }
 }
 
+// ====================================
+// SEARCH COMPONENT
+// ====================================
+
 class SearchComponent {
   constructor(containerId) {
     this.containerId = containerId;
@@ -341,8 +349,26 @@ class SearchComponent {
   }
 }
 
+// ====================================
+// UTILITY FUNCTIONS
+// ====================================
+
 function handleSearchResultClick(contactId) {
   window.location.href = `/detail/?id=${contactId}`;
+}
+
+function searchContacts(dataContacts, keyword) {
+  const normalizedKeyword = keyword.toLowerCase();
+
+  return dataContacts.filter((contact) => {
+    const searchFields = [
+      contact.fullName?.toLowerCase(),
+      contact.email?.toLowerCase(),
+      contact.phone?.toLowerCase(),
+    ].filter(Boolean);
+
+    return searchFields.some((field) => field.includes(normalizedKeyword));
+  });
 }
 
 function goToDashboardPage() {
@@ -471,19 +497,82 @@ function getContactDetailsById(dataContacts, id) {
   return contact;
 }
 
-function searchContacts(dataContacts, keyword) {
-  const normalizedKeyword = keyword.toLowerCase();
+function addContact(dataContacts, newContactData) {
+  const lastId =
+    dataContacts.length > 0 ? dataContacts[dataContacts.length - 1].id : 0;
+  const newId = lastId + 1;
 
-  return dataContacts.filter((contact) => {
-    const searchFields = [
-      contact.fullName?.toLowerCase(),
-      contact.email?.toLowerCase(),
-      contact.phone?.toLowerCase(),
-    ].filter(Boolean);
+  const newContact = {
+    id: newId,
+    fullName: newContactData.fullName ?? "Unknown",
+    phone: newContactData.phone ?? null,
+    email: newContactData.email ?? null,
+    birthdate: newContactData.birthdate ?? null,
+    address: newContactData.address ?? null,
+    labels: Array.isArray(newContactData.labels) ? newContactData.labels : [],
+    color:
+      newContactData.color ||
+      getColorForInitial(getInitials(newContactData.fullName)),
+  };
 
-    return searchFields.some((field) => field.includes(normalizedKeyword));
-  });
+  if (!newContact.phone && !newContact.email) {
+    showNotification(
+      "At least one contact method (phone or email) is required.",
+      "error"
+    );
+    return dataContacts;
+  }
+
+  const isPhoneExisted = newContact.phone
+    ? dataContacts.some((contact) => contact.phone === newContact.phone)
+    : false;
+
+  if (isPhoneExisted) {
+    showNotification(
+      `Contact with phone number ${newContact.phone} already exists.`,
+      "error"
+    );
+    return dataContacts;
+  }
+
+  const updatedContacts = [...dataContacts, newContact];
+
+  saveContactsToStorage(updatedContacts);
+  showNotification(
+    `Contact ${newContact.fullName} added successfully!`,
+    "success"
+  );
+  setTimeout(() => {
+    goToDashboardPage();
+  }, 300);
 }
+
+function editContactById(dataContacts, id, updatedFields) {
+  if (!updatedFields.phone && !updatedFields.email) {
+    showNotification(
+      "At least one contact method (phone or email) is required.",
+      "error"
+    );
+    return dataContacts;
+  }
+
+  const updatedContacts = dataContacts.map((contact) => {
+    if (contact.id === id) {
+      return { ...contact, ...updatedFields };
+    }
+    return contact;
+  });
+
+  saveContactsToStorage(updatedContacts);
+  showNotification("Contact updated succesfully", "success");
+  setTimeout(() => {
+    goToDashboardPage();
+  }, 300);
+}
+
+// ====================================
+// LABEL FILTER MANAGER
+// ====================================
 
 function initializeLabelFilters() {
   const applyButton = document.getElementById("apply-filters");
@@ -617,55 +706,9 @@ function filterContactsByMultipleLabels(contacts, labels) {
   });
 }
 
-function addContact(dataContacts, newContactData) {
-  const lastId =
-    dataContacts.length > 0 ? dataContacts[dataContacts.length - 1].id : 0;
-  const newId = lastId + 1;
-
-  const newContact = {
-    id: newId,
-    fullName: newContactData.fullName ?? "Unknown",
-    phone: newContactData.phone ?? null,
-    email: newContactData.email ?? null,
-    birthdate: newContactData.birthdate ?? null,
-    address: newContactData.address ?? null,
-    labels: Array.isArray(newContactData.labels) ? newContactData.labels : [],
-    color:
-      newContactData.color ||
-      getColorForInitial(getInitials(newContactData.fullName)),
-  };
-
-  if (!newContact.phone && !newContact.email) {
-    showNotification(
-      "At least one contact method (phone or email) is required.",
-      "error"
-    );
-    return dataContacts;
-  }
-
-  const isPhoneExisted = newContact.phone
-    ? dataContacts.some((contact) => contact.phone === newContact.phone)
-    : false;
-
-  if (isPhoneExisted) {
-    showNotification(
-      `Contact with phone number ${newContact.phone} already exists.`,
-      "error"
-    );
-    return dataContacts;
-  }
-
-  const updatedContacts = [...dataContacts, newContact];
-
-  saveContactsToStorage(updatedContacts);
-  showNotification(
-    `Contact ${newContact.fullName} added successfully!`,
-    "success"
-  );
-  setTimeout(() => {
-    goToDashboardPage();
-  }, 300);
-}
+// ====================================
+// DELETE MANAGER
+// ====================================
 
 function deleteContactById(dataContacts, id) {
   try {
@@ -734,28 +777,9 @@ function handleDeleteContact(contactId) {
   }
 }
 
-function editContactById(dataContacts, id, updatedFields) {
-  if (!updatedFields.phone && !updatedFields.email) {
-    showNotification(
-      "At least one contact method (phone or email) is required.",
-      "error"
-    );
-    return dataContacts;
-  }
-
-  const updatedContacts = dataContacts.map((contact) => {
-    if (contact.id === id) {
-      return { ...contact, ...updatedFields };
-    }
-    return contact;
-  });
-
-  saveContactsToStorage(updatedContacts);
-  showNotification("Contact updated succesfully", "success");
-  setTimeout(() => {
-    goToDashboardPage();
-  }, 300);
-}
+// ====================================
+// MOBILE NAVIGATION
+// ====================================
 
 function initializeMobileNavigation() {
   const mobileMenuButton = document.getElementById("mobile-menu-button");
